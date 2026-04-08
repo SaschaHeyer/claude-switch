@@ -11,7 +11,7 @@ One machine. Multiple logins. Zero friction.
 [![Linux](https://img.shields.io/badge/Linux-supported-brightgreen.svg)]()
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-v2.x-blueviolet.svg)](https://docs.anthropic.com/en/docs/claude-code)
 
-<img src="usage.png" alt="Claude Switch interactive menu" width="600">
+<img src="demo.gif" alt="Claude Switch demo" width="700">
 
 </div>
 
