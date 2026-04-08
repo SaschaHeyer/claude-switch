@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Switch — Run multiple Claude Code accounts side by side</title>
+    <meta name="description" content="One machine. Multiple Claude Code logins. Zero friction. Switch between work and personal accounts instantly.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        claude: {
+                            orange: '#E87A35',
+                            dark: '#0d1117',
+                            darker: '#080b10',
+                            card: '#161b22',
+                            border: '#21262d',
+                            text: '#e6edf3',
+                            muted: '#8b949e',
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['SF Mono', 'Fira Code', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .cursor-blink { animation: blink 1s step-end infinite; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.6s ease-out forwards; opacity: 0; }
+        .fade-up-1 { animation-delay: 0.1s; }
+        .fade-up-2 { animation-delay: 0.2s; }
+        .fade-up-3 { animation-delay: 0.3s; }
+        .fade-up-4 { animation-delay: 0.5s; }
+        .terminal-line { opacity: 0; animation: fadeUp 0.4s ease-out forwards; }
+        .copy-btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body class="bg-claude-darker text-claude-text antialiased">
+
+    <!-- Hero -->
+    <section class="min-h-screen flex flex-col justify-center px-6 relative overflow-hidden">
+        <!-- Subtle gradient glow -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-claude-orange/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div class="max-w-3xl mx-auto w-full relative">
+            <p class="text-claude-orange font-mono text-sm tracking-widest uppercase mb-6 fade-up fade-up-1">Open Source CLI Tool</p>
+            <h1 class="text-5xl sm:text-7xl font-bold tracking-tight leading-[1.05] mb-6 fade-up fade-up-2">
+                Claude<br>
+                <span class="text-claude-orange">Switch</span>
+            </h1>
+            <p class="text-xl sm:text-2xl text-claude-muted max-w-lg mb-10 fade-up fade-up-3">
+                Run your work and personal Claude Code accounts side by side. One machine. Multiple logins. Zero friction.
+            </p>
+
+            <!-- Install command -->
+            <div class="fade-up fade-up-4">
+                <div class="bg-claude-dark border border-claude-border rounded-lg p-4 max-w-xl group relative">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="flex gap-1.5">
+                            <div class="w-3 h-3 rounded-full bg-[#ff5f57]"></div>
+                            <div class="w-3 h-3 rounded-full bg-[#febc2e]"></div>
+                            <div class="w-3 h-3 rounded-full bg-[#28c840]"></div>
+                        </div>
+                        <span class="text-claude-muted text-xs font-mono">terminal</span>
+                    </div>
+                    <div class="font-mono text-sm flex items-center justify-between">
+                        <div>
+                            <span class="text-claude-orange">$</span>
+                            <span class="text-claude-text ml-2" id="install-cmd">curl -fsSL https://raw.githubusercontent.com/SaschaHeyer/claude-switch/main/install.sh | sh</span>
+                            <span class="cursor-blink text-claude-orange">_</span>
+                        </div>
+                        <button onclick="copyInstall()" class="copy-btn text-claude-muted hover:text-claude-text transition-colors ml-4 shrink-0" title="Copy">
+                            <svg id="copy-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            <svg id="check-icon" class="w-5 h-5 hidden text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex gap-4 mt-4 text-sm text-claude-muted">
+                    <a href="https://github.com/SaschaHeyer/claude-switch" class="hover:text-claude-text transition-colors flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        GitHub
+                    </a>
+                    <span class="text-claude-border">·</span>
+                    <span>macOS & Linux</span>
+                    <span class="text-claude-border">·</span>
+                    <span>MIT License</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem / Solution -->
+    <section class="px-6 py-24 border-t border-claude-border">
+        <div class="max-w-3xl mx-auto">
+            <div class="grid sm:grid-cols-2 gap-12">
+                <div>
+                    <p class="text-claude-muted text-sm font-mono uppercase tracking-wider mb-4">Before</p>
+                    <div class="bg-claude-dark border border-claude-border rounded-lg p-5 font-mono text-sm space-y-2">
+                        <p><span class="text-claude-orange">$</span> claude <span class="text-claude-muted"># logged in as work</span></p>
+                        <p><span class="text-claude-orange">$</span> /logout</p>
+                        <p><span class="text-claude-orange">$</span> /login <span class="text-claude-muted"># switch to personal</span></p>
+                        <p><span class="text-claude-orange">$</span> <span class="text-claude-muted"># ...repeat forever</span></p>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-claude-orange text-sm font-mono uppercase tracking-wider mb-4">After</p>
+                    <div class="bg-claude-dark border border-claude-orange/30 rounded-lg p-5 font-mono text-sm space-y-2">
+                        <p><span class="text-claude-orange">$</span> claude-switch work</p>
+                        <p><span class="text-claude-orange">$</span> claude-switch personal</p>
+                        <p class="text-claude-muted pt-2">Both running. Side by side.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="px-6 py-24 border-t border-claude-border">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-3xl sm:text-4xl font-bold mb-16">Three commands.<br><span class="text-claude-orange">That's it.</span></h2>
+
+            <div class="space-y-12">
+                <!-- Step 1 -->
+                <div class="flex gap-6">
+                    <div class="shrink-0 w-10 h-10 rounded-full bg-claude-orange/10 border border-claude-orange/30 flex items-center justify-center text-claude-orange font-mono font-bold text-sm">1</div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold mb-3">Create profiles</h3>
+                        <div class="bg-claude-dark border border-claude-border rounded-lg p-4 font-mono text-sm space-y-1">
+                            <p><span class="text-claude-orange">$</span> claude-switch create work</p>
+                            <p><span class="text-claude-orange">$</span> claude-switch create personal</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flex gap-6">
+                    <div class="shrink-0 w-10 h-10 rounded-full bg-claude-orange/10 border border-claude-orange/30 flex items-center justify-center text-claude-orange font-mono font-bold text-sm">2</div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold mb-3">Launch by name</h3>
+                        <div class="bg-claude-dark border border-claude-border rounded-lg p-4 font-mono text-sm">
+                            <p><span class="text-claude-orange">$</span> claude-switch work</p>
+                        </div>
+                        <p class="text-claude-muted text-sm mt-2">Claude opens with that account. First time only: log in once.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="flex gap-6">
+                    <div class="shrink-0 w-10 h-10 rounded-full bg-claude-orange/10 border border-claude-orange/30 flex items-center justify-center text-claude-orange font-mono font-bold text-sm">3</div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold mb-3">Run both at once</h3>
+                        <div class="bg-claude-dark border border-claude-border rounded-lg p-4 font-mono text-sm">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-claude-muted text-xs mb-2">Terminal 1</p>
+                                    <p><span class="text-claude-orange">$</span> claude-switch work</p>
+                                </div>
+                                <div>
+                                    <p class="text-claude-muted text-xs mb-2">Terminal 2</p>
+                                    <p><span class="text-claude-orange">$</span> claude-switch personal</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="px-6 py-24 border-t border-claude-border">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-3xl sm:text-4xl font-bold mb-12">What you <span class="text-claude-orange">get</span></h2>
+
+            <div class="grid sm:grid-cols-2 gap-6">
+                <div class="bg-claude-card border border-claude-border rounded-lg p-6">
+                    <div class="text-claude-orange text-2xl mb-3">&#9889;</div>
+                    <h3 class="font-semibold mb-2">Instant switching</h3>
+                    <p class="text-claude-muted text-sm">Jump between accounts with a single command. No logout/login dance.</p>
+                </div>
+                <div class="bg-claude-card border border-claude-border rounded-lg p-6">
+                    <div class="text-claude-orange text-2xl mb-3">&#8741;</div>
+                    <h3 class="font-semibold mb-2">Side by side</h3>
+                    <p class="text-claude-muted text-sm">Run work and personal sessions simultaneously in separate terminals.</p>
+                </div>
+                <div class="bg-claude-card border border-claude-border rounded-lg p-6">
+                    <div class="text-claude-orange text-2xl mb-3">&#128279;</div>
+                    <h3 class="font-semibold mb-2">Shared config</h3>
+                    <p class="text-claude-muted text-sm">Skills, settings, and CLAUDE.md are symlinked across profiles. No duplication.</p>
+                </div>
+                <div class="bg-claude-card border border-claude-border rounded-lg p-6">
+                    <div class="text-claude-orange text-2xl mb-3">&#128274;</div>
+                    <h3 class="font-semibold mb-2">Isolated auth</h3>
+                    <p class="text-claude-muted text-sm">Each profile has its own OAuth session in the macOS Keychain. Fully separate.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- All commands -->
+    <section class="px-6 py-24 border-t border-claude-border">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-3xl sm:text-4xl font-bold mb-12">Commands</h2>
+            <div class="bg-claude-dark border border-claude-border rounded-lg overflow-hidden">
+                <table class="w-full text-sm font-mono">
+                    <tbody class="divide-y divide-claude-border">
+                        <tr class="hover:bg-claude-card/50 transition-colors">
+                            <td class="px-5 py-3.5 text-claude-orange whitespace-nowrap">claude-switch &lt;name&gt;</td>
+                            <td class="px-5 py-3.5 text-claude-muted">Launch Claude with that profile</td>
+                        </tr>
+                        <tr class="hover:bg-claude-card/50 transition-colors">
+                            <td class="px-5 py-3.5 text-claude-orange whitespace-nowrap">claude-switch create</td>
+                            <td class="px-5 py-3.5 text-claude-muted">Create a new profile</td>
+                        </tr>
+                        <tr class="hover:bg-claude-card/50 transition-colors">
+                            <td class="px-5 py-3.5 text-claude-orange whitespace-nowrap">claude-switch list</td>
+                            <td class="px-5 py-3.5 text-claude-muted">Show all profiles + login status</td>
+                        </tr>
+                        <tr class="hover:bg-claude-card/50 transition-colors">
+                            <td class="px-5 py-3.5 text-claude-orange whitespace-nowrap">claude-switch delete</td>
+                            <td class="px-5 py-3.5 text-claude-muted">Delete a profile</td>
+                        </tr>
+                        <tr class="hover:bg-claude-card/50 transition-colors">
+                            <td class="px-5 py-3.5 text-claude-orange whitespace-nowrap">claude-switch</td>
+                            <td class="px-5 py-3.5 text-claude-muted">Interactive menu</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="px-6 py-32 border-t border-claude-border text-center">
+        <div class="max-w-2xl mx-auto">
+            <h2 class="text-4xl sm:text-5xl font-bold mb-6">Stop juggling<br><span class="text-claude-orange">logins.</span></h2>
+            <p class="text-claude-muted text-lg mb-10">Install in 5 seconds. Set up in 30.</p>
+            <div class="bg-claude-dark border border-claude-border rounded-lg p-4 max-w-xl mx-auto font-mono text-sm text-left">
+                <span class="text-claude-orange">$</span>
+                <span class="ml-2">curl -fsSL https://raw.githubusercontent.com/SaschaHeyer/claude-switch/main/install.sh | sh</span>
+            </div>
+            <div class="mt-8">
+                <a href="https://github.com/SaschaHeyer/claude-switch" class="inline-flex items-center gap-2 bg-claude-orange hover:bg-claude-orange/90 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    View on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="px-6 py-8 border-t border-claude-border">
+        <div class="max-w-3xl mx-auto flex items-center justify-between text-claude-muted text-sm">
+            <p>Claude Switch is not affiliated with Anthropic.</p>
+            <a href="https://github.com/SaschaHeyer/claude-switch" class="hover:text-claude-text transition-colors">GitHub</a>
+        </div>
+    </footer>
+
+    <script>
+        function copyInstall() {
+            const cmd = 'curl -fsSL https://raw.githubusercontent.com/SaschaHeyer/claude-switch/main/install.sh | sh';
+            navigator.clipboard.writeText(cmd);
+            document.getElementById('copy-icon').classList.add('hidden');
+            document.getElementById('check-icon').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('copy-icon').classList.remove('hidden');
+                document.getElementById('check-icon').classList.add('hidden');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
