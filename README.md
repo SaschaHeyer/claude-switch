@@ -189,6 +189,13 @@ Yes. The only macOS-specific part is Keychain storage for OAuth tokens. On Linux
 
 </details>
 
+<details>
+<summary><strong>Does this violate Anthropic's Terms of Service?</strong></summary>
+
+No. Claude Switch is a local shell script that manages separate `~/.claude/` config directories. It doesn't touch, extract, or relay any OAuth tokens. It simply sets the `CLAUDE_CONFIG_DIR` environment variable and launches the official `claude` binary. All authentication and API calls are handled directly by Claude Code — nothing leaves your machine through claude-switch.
+
+</details>
+
 ---
 
 ## Requirements
