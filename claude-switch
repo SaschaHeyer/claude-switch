@@ -333,10 +333,12 @@ cmd_launch() {
     local name="${1:-}"
     if [ -z "$name" ]; then
         name=$(pick_profile "launch") || exit 1
+    else
+        shift
     fi
 
     if [ "$name" = "default" ]; then
-        exec claude
+        exec claude "$@"
     fi
 
     if ! profile_exists "$name"; then
@@ -347,7 +349,7 @@ cmd_launch() {
 
     local dir
     dir="$(profile_dir "$name")"
-    exec env CLAUDE_CONFIG_DIR="$dir" claude
+    exec env CLAUDE_CONFIG_DIR="$dir" claude "$@"
 }
 
 cmd_interactive() {
@@ -425,8 +427,8 @@ main() {
         "")                  cmd_interactive ;;
         *)
             # If arg matches a profile name, launch it directly
-            if profile_exists "$1"; then
-                cmd_launch "$1"
+            if [ "$1" = "default" ] || profile_exists "$1"; then
+                cmd_launch "$@"
             else
                 print_error "Unknown command or profile: $1"
                 echo ""

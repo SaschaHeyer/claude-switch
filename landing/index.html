@@ -163,10 +163,11 @@
                     <div class="shrink-0 w-10 h-10 rounded-full bg-claude-orange/10 border border-claude-orange/30 flex items-center justify-center text-claude-orange font-mono font-bold text-sm">2</div>
                     <div class="flex-1">
                         <h3 class="text-lg font-semibold mb-3">Launch by name</h3>
-                        <div class="bg-claude-dark border border-claude-border rounded-lg p-4 font-mono text-sm">
+                        <div class="bg-claude-dark border border-claude-border rounded-lg p-4 font-mono text-sm space-y-1">
                             <p><span class="text-claude-orange">$</span> claude-switch work</p>
+                            <p><span class="text-claude-orange">$</span> claude-switch work --dangerously-skip-permissions</p>
                         </div>
-                        <p class="text-claude-muted text-sm mt-2">Claude opens with that account. First time only: log in once.</p>
+                        <p class="text-claude-muted text-sm mt-2">Claude opens with that account. First time only: log in once. Any Claude flags are forwarded.</p>
                     </div>
                 </div>
 
@@ -231,7 +232,7 @@
                 <table class="w-full text-sm font-mono">
                     <tbody class="divide-y divide-claude-border">
                         <tr class="hover:bg-claude-card/50 transition-colors">
-                            <td class="px-5 py-3.5 text-claude-orange whitespace-nowrap">claude-switch &lt;name&gt;</td>
+                            <td class="px-5 py-3.5 text-claude-orange whitespace-nowrap">claude-switch &lt;name&gt; [claude args...]</td>
                             <td class="px-5 py-3.5 text-claude-muted">Launch Claude with that profile</td>
                         </tr>
                         <tr class="hover:bg-claude-card/50 transition-colors">
