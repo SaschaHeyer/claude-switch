@@ -111,6 +111,7 @@ Each runs with its own OAuth session, history, and usage tracking. Your skills, 
 | `claude-switch create [name]` | Create a new profile |
 | `claude-switch list` | Show all profiles and login status |
 | `claude-switch delete [name]` | Delete a profile |
+| `claude-switch sync` | Sync project sessions across all profiles |
 | `claude-switch` | Interactive menu |
 | `claude-switch help` | Show help |
 
@@ -137,6 +138,18 @@ Claude Code reads its config from `~/.claude/`. Claude Switch creates separate d
 - Session history
 - Usage tracking
 - Project permissions
+
+### Syncing sessions across profiles
+
+Hit your usage limit on one profile? Sync sessions to another and `/resume` right where you left off:
+
+```bash
+claude-switch sync           # bidirectional sync, all profiles
+claude-switch sync --dry-run # preview what would change
+claude-switch sync -v        # show per-file detail
+```
+
+`sync` copies `projects/` and `plans/` between all profiles using a "latest wins" strategy — safe to run repeatedly.
 
 ---
 
@@ -186,6 +199,13 @@ cp -r ~/.claude/skills ~/.claude-work/skills
 <summary><strong>Does this work on Linux?</strong></summary>
 
 Yes. The only macOS-specific part is Keychain storage for OAuth tokens. On Linux, Claude Code stores credentials in `~/.claude/.credentials.json`, which is already isolated per config directory.
+
+</details>
+
+<details>
+<summary><strong>Can I continue a conversation after hitting my usage limit?</strong></summary>
+
+Yes. Run `claude-switch sync` after hitting your limit, then launch a different profile and use `/resume` to pick up where you left off. The sync copies session files bidirectionally so each profile has a complete view of all conversations.
 
 </details>
 

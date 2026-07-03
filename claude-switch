@@ -359,6 +359,7 @@ cmd_interactive() {
         "List all profiles" \
         "Launch a profile" \
         "Delete a profile" \
+        "Sync sessions" \
         "Exit" \
         --header "What would you like to do?" \
         --cursor.foreground 208 \
@@ -371,8 +372,104 @@ cmd_interactive() {
         "List all profiles")    cmd_list ;;
         "Launch a profile")     cmd_launch ;;
         "Delete a profile")     cmd_delete ;;
+        "Sync sessions")        cmd_sync ;;
         "Exit"|"")              exit 0 ;;
     esac
+}
+
+cmd_sync() {
+    local dry_run=false verbose=false
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --dry-run|-n) dry_run=true ;;
+            --verbose|-v) verbose=true ;;
+            *) print_error "Unknown option: $1"; exit 1 ;;
+        esac
+        shift
+    done
+
+    # Collect all profile dirs (named + default if it exists)
+    local all_dirs=()
+    [ -d "$CLAUDE_HOME" ] && all_dirs+=("$CLAUDE_HOME")
+    while IFS= read -r name; do
+        all_dirs+=("$(profile_dir "$name")")
+    done < <(get_all_profiles)
+
+    if [ "${#all_dirs[@]}" -lt 2 ]; then
+        print_warn "Need at least 2 profiles to sync."
+        exit 1
+    fi
+
+    # Warn about active sessions
+    local active=()
+    for dir in "${all_dirs[@]}"; do
+        if [ -d "$dir/sessions" ] && ls "$dir/sessions"/*.json &>/dev/null 2>&1; then
+            local pname
+            pname=$(basename "$dir")
+            pname="${pname#.claude-}"
+            [ "$pname" = ".claude" ] && pname="default"
+            active+=("$pname")
+        fi
+    done
+    if [ "${#active[@]}" -gt 0 ]; then
+        print_warn "Active sessions detected in: ${active[*]}"
+        print_warn "Syncing while Claude is running may capture incomplete session files."
+        echo ""
+        if ! gum confirm "Continue anyway?" --default=false; then
+            print_info "Cancelled."
+            exit 0
+        fi
+        echo ""
+    fi
+
+    local rsync_flags=(-a --update)
+    $dry_run && rsync_flags+=(--dry-run)
+    $verbose && rsync_flags+=(-v --itemize-changes)
+
+    local count="${#all_dirs[@]}"
+    echo ""
+    if $dry_run; then
+        printf "  ${BOLD}Dry run — syncing sessions across %d profiles${RESET}\n\n" "$count"
+    else
+        printf "  ${BOLD}Syncing sessions across %d profiles${RESET}\n\n" "$count"
+    fi
+
+    local total_files=0
+
+    for src in "${all_dirs[@]}"; do
+        for dst in "${all_dirs[@]}"; do
+            [[ "$src" == "$dst" ]] && continue
+            local src_name dst_name
+            src_name=$(basename "$src"); src_name="${src_name#.claude-}"; [ "$src_name" = ".claude" ] && src_name="default"
+            dst_name=$(basename "$dst"); dst_name="${dst_name#.claude-}"; [ "$dst_name" = ".claude" ] && dst_name="default"
+
+            for sync_dir in projects plans; do
+                [ -d "$src/$sync_dir" ] || continue
+                mkdir -p "$dst/$sync_dir"
+                local output
+                output=$(rsync "${rsync_flags[@]}" "$src/$sync_dir/" "$dst/$sync_dir/" 2>&1) || {
+                    print_error "rsync failed: $src_name → $dst_name ($sync_dir)"
+                    continue
+                }
+                if $verbose && [ -n "$output" ]; then
+                    while IFS= read -r line; do
+                        print_dim "  $src_name → $dst_name  $line"
+                    done <<< "$output"
+                fi
+                local n
+                n=$(printf '%s\n' "$output" | grep -c '^[<>ch.]' 2>/dev/null || true)
+                total_files=$((total_files + n))
+            done
+        done
+    done
+
+    if $dry_run; then
+        print_info "Dry run complete. $total_files file(s) would be transferred."
+    else
+        print_success "Sync complete. $total_files file(s) transferred."
+    fi
+    echo ""
 }
 
 cmd_help() {
@@ -385,6 +482,7 @@ cmd_help() {
     printf "    ${CYAN}create${RESET} ${DIM}[name]${RESET}         Create a new profile\n"
     printf "    ${CYAN}list${RESET}                  List all profiles and auth status\n"
     printf "    ${CYAN}delete${RESET} ${DIM}[name]${RESET}         Delete a profile\n"
+    printf "    ${CYAN}sync${RESET} ${DIM}[--dry-run] [-v]${RESET} Sync project sessions across all profiles\n"
     printf "    ${CYAN}help${RESET}                  Show this help message\n"
     printf "    ${CYAN}version${RESET}               Show version\n\n"
     printf "  ${BOLD}EXAMPLES${RESET}\n"
@@ -392,6 +490,7 @@ cmd_help() {
     printf "    ${DIM}claude-switch personal${RESET}          ${DIM}# launch personal profile${RESET}\n"
     printf "    ${DIM}claude-switch create work${RESET}       ${DIM}# create a new profile${RESET}\n"
     printf "    ${DIM}claude-switch list${RESET}              ${DIM}# show all profiles${RESET}\n"
+    printf "    ${DIM}claude-switch sync${RESET}              ${DIM}# sync sessions across profiles${RESET}\n"
     printf "    ${DIM}claude-switch${RESET}                   ${DIM}# interactive menu${RESET}\n\n"
     printf "  ${BOLD}HOW IT WORKS${RESET}\n"
     printf "    Each profile gets its own ~/.claude-<name>/ directory with\n"
@@ -420,6 +519,7 @@ main() {
         list|ls)             shift; cmd_list "$@" ;;
         delete|rm|remove)    shift; cmd_delete "$@" ;;
         launch|run|start)    shift; cmd_launch "$@" ;;
+        sync)                shift; cmd_sync "$@" ;;
         help|-h|--help)      cmd_help ;;
         version|-v|--version) echo "claude-switch v$VERSION" ;;
         "")                  cmd_interactive ;;
