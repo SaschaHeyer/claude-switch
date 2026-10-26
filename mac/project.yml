@@ -1,0 +1,65 @@
+name: ClaudeSwitch
+options:
+  bundleIdPrefix: dev.claudeswitch
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.10"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: 3J5987UXFQ
+    ENABLE_HARDENED_RUNTIME: YES
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+
+targets:
+  # Tiny app copied into every profile's Dock app. It starts Claude Desktop
+  # on the profile's data folder and exits.
+  ProfileLauncher:
+    type: tool
+    platform: macOS
+    sources:
+      - path: Launcher
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_NAME: ProfileLauncher
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGN_STYLE: Manual
+
+  ClaudeSwitch:
+    type: application
+    platform: macOS
+    sources:
+      - path: ClaudeSwitch
+      - path: Shared
+    dependencies:
+      - target: ProfileLauncher
+        embed: false
+    postBuildScripts:
+      - name: Embed profile launcher
+        script: |
+          cp "${BUILT_PRODUCTS_DIR}/ProfileLauncher" "${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ProfileLauncher"
+        inputFiles:
+          - "${BUILT_PRODUCTS_DIR}/ProfileLauncher"
+        outputFiles:
+          - "${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ProfileLauncher"
+    info:
+      path: ClaudeSwitch/Info.plist
+      properties:
+        CFBundleDisplayName: Claude Switch
+        CFBundleName: Claude Switch
+        LSApplicationCategoryType: public.app-category.developer-tools
+        LSMinimumSystemVersion: "14.0"
+        NSHumanReadableCopyright: "© 2026 Sascha Heyer"
+        NSAppleEventsUsageDescription: Claude Switch opens Claude Code in iTerm when you pick it as your terminal.
+        ATSApplicationFontsPath: "."
+    settings:
+      base:
+        PRODUCT_NAME: Claude Switch
+        PRODUCT_BUNDLE_IDENTIFIER: dev.claudeswitch.app
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGN_IDENTITY: "-"
+        ENABLE_APP_SANDBOX: NO

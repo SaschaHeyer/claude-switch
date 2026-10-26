@@ -17,6 +17,14 @@ One machine. Multiple logins. Zero friction.
 
 ---
 
+## New: Claude Switch for Mac
+
+A native Mac app for **Claude Desktop and Claude Code**. Every account opens in its own window with its own login, all at the same time, with a Dock app and menu bar entry per profile. Already on Multi-Claude? Your profiles come over in one click, straight from their existing folders.
+
+**$4.99 once, no subscription.** See [claudeswitch.dev](https://claudeswitch.dev) and [`mac/`](mac/) for how it works. The CLI below stays free and open source, and both use the same profiles.
+
+---
+
 ## The Problem
 
 Claude Code stores one login per machine. If you have a **work account** (Team/Enterprise) and a **personal account** (Pro/Max), you have to `/logout` and `/login` every time you switch. That gets old fast.
