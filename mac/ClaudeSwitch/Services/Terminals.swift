@@ -35,38 +35,28 @@ enum Terminals {
     static func command(configDir: String, folder: String?) -> String {
         var parts: [String] = []
         if let folder { parts.append("cd \(quote(folder))") }
-        let claude = ClaudeCode.binary.map(quote) ?? "claude"
         if ClaudeDesktop.normalize(configDir) == ClaudeDesktop.defaultCodeDir {
-            parts.append(claude)
+            parts.append("claude")
         } else {
-            parts.append("CLAUDE_CONFIG_DIR=\(quote(configDir)) \(claude)")
+            parts.append("CLAUDE_CONFIG_DIR=\(quote(configDir)) claude")
         }
         return parts.joined(separator: " && ")
     }
 
     static func open(configDir: String, folder: String?, in terminal: TerminalApp, profileName: String) throws {
+        guard let app = terminal.appURL else { throw ProfileError("\(terminal.name) isn't installed.") }
         let cmd = command(configDir: configDir, folder: folder)
         switch terminal {
-        case .iterm:
-            let script = """
-            tell application "iTerm"
-                activate
-                create window with default profile command \(appleScriptString("/bin/zsh -lic " + quote(cmd + "; exec $SHELL -l")))
-            end tell
-            """
-            var error: NSDictionary?
-            NSAppleScript(source: script)?.executeAndReturnError(&error)
-            if let error { throw ProfileError(error[NSAppleScript.errorMessage] as? String ?? "iTerm didn't respond.") }
         case .ghostty:
-            guard let url = terminal.appURL else { throw ProfileError("Ghostty isn't installed.") }
             let config = NSWorkspace.OpenConfiguration()
             config.createsNewApplicationInstance = true
             config.arguments = ["-e", "/bin/zsh", "-lic", cmd + "; exec $SHELL -l"]
-            NSWorkspace.shared.openApplication(at: url, configuration: config)
-        case .terminal, .warp:
-            // A .command file opens in a fresh window and needs no Automation permission.
+            NSWorkspace.shared.openApplication(at: app, configuration: config)
+        case .terminal, .iterm, .warp:
+            // A .command file opens in a fresh window of the chosen terminal and
+            // needs no Automation permission. An interactive login shell loads
+            // the user's PATH, so `claude` resolves like it does for them.
             let file = try commandFile(cmd, name: profileName)
-            guard let app = terminal.appURL else { throw ProfileError("\(terminal.name) isn't installed.") }
             NSWorkspace.shared.open([file], withApplicationAt: app, configuration: NSWorkspace.OpenConfiguration())
         }
     }
@@ -76,7 +66,7 @@ enum Terminals {
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         let url = dir.appendingPathComponent("claude-\(name).command")
         let body = """
-        #!/bin/zsh -l
+        #!/bin/zsh -il
         clear
         printf '\\033]0;Claude · \(name)\\007'
         \(cmd)
@@ -89,8 +79,4 @@ enum Terminals {
     }
 
     static func quote(_ s: String) -> String { "'" + s.replacingOccurrences(of: "'", with: "'\\''") + "'" }
-
-    private static func appleScriptString(_ s: String) -> String {
-        "\"" + s.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"") + "\""
-    }
 }

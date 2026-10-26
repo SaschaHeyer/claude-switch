@@ -59,62 +59,22 @@ enum ClaudeCode {
         try? kept.joined(separator: "\n").write(toFile: zshrc, atomically: true, encoding: .utf8)
     }
 
-    // MARK: - The claude binary
+    // MARK: - Login
 
-    /// GUI apps don't get the shell PATH, so look in the usual places first
-    /// and ask a login shell last.
-    static let binary: String? = {
-        let candidates = [
-            Paths.home + "/.local/bin/claude",
-            Paths.home + "/.claude/local/claude",
-            "/opt/homebrew/bin/claude",
-            "/usr/local/bin/claude",
-            Paths.home + "/.npm-global/bin/claude",
-            Paths.home + "/.bun/bin/claude",
-        ]
-        if let found = candidates.first(where: { Paths.fm.isExecutableFile(atPath: $0) }) { return found }
-        let shell = ProcessInfo.processInfo.environment["SHELL"] ?? "/bin/zsh"
-        let out = run(shell, ["-lic", "command -v claude"], env: nil, timeout: 5)?
-            .split(separator: "\n").last.map(String.init)?.trimmingCharacters(in: .whitespaces)
-        return out.flatMap { Paths.fm.isExecutableFile(atPath: $0) ? $0 : nil }
-    }()
-
-    /// Login state of one config folder via `claude auth status`.
-    static func authStatus(configDir: String) -> CodeAuth? {
-        guard let binary else { return nil }
-        var env = ProcessInfo.processInfo.environment
-        if ClaudeDesktop.normalize(configDir) == ClaudeDesktop.defaultCodeDir {
-            env.removeValue(forKey: "CLAUDE_CONFIG_DIR")
-        } else {
-            env["CLAUDE_CONFIG_DIR"] = configDir
-        }
-        guard let out = run(binary, ["auth", "status"], env: env, timeout: 10),
-              let start = out.firstIndex(of: "{"),
-              let json = try? JSONSerialization.jsonObject(with: Data(out[start...].utf8)) as? [String: Any]
+    /// Who a config folder is signed in as, read from the account Claude Code
+    /// keeps in .claude.json. Reading a file works in the App Sandbox, running
+    /// `claude auth status` doesn't. Tokens stay in the Keychain, untouched.
+    static func authStatus(configDir: String) -> CodeAuth {
+        let file = ClaudeDesktop.normalize(configDir) == ClaudeDesktop.defaultCodeDir
+            ? Paths.home + "/.claude.json"
+            : configDir + "/.claude.json"
+        guard let data = Paths.fm.contents(atPath: file),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let account = json["oauthAccount"] as? [String: Any],
+              let email = account["emailAddress"] as? String
         else { return CodeAuth(loggedIn: false) }
-        return CodeAuth(
-            loggedIn: json["loggedIn"] as? Bool ?? false,
-            email: json["email"] as? String,
-            plan: json["subscriptionType"] as? String,
-            org: json["orgName"] as? String
-        )
-    }
-
-    static func run(_ path: String, _ args: [String], env: [String: String]?, timeout: TimeInterval) -> String? {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: path)
-        process.arguments = args
-        if let env { process.environment = env }
-        let pipe = Pipe()
-        process.standardOutput = pipe
-        process.standardError = Pipe()
-        process.standardInput = FileHandle.nullDevice
-        do { try process.run() } catch { return nil }
-        let deadline = Date().addingTimeInterval(timeout)
-        while process.isRunning && Date() < deadline { usleep(50_000) }
-        if process.isRunning { process.terminate(); return nil }
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        return String(decoding: data, as: UTF8.self)
+        let plan = (account["organizationType"] as? String).map { $0.replacingOccurrences(of: "claude_", with: "") }
+        return CodeAuth(loggedIn: true, email: email, plan: plan, org: account["organizationName"] as? String)
     }
 }
 

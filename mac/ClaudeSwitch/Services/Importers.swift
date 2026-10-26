@@ -4,13 +4,25 @@ import Foundation
 /// where the data lives: folders are never moved or copied, so the other
 /// tool keeps working and switching back stays possible.
 struct ImportCandidate: Identifiable, Hashable {
-    var id: String { desktopDataDir }
+    var id: String { desktopDataDir ?? codeConfigDir ?? name }
     var name: String
     var color: ProfileColor
-    var desktopDataDir: String
+    var desktopDataDir: String?
     var codeConfigDir: String?
     var origin: ProfileOrigin
     var hasData: Bool
+    /// The account a found folder is signed in to, to tell profiles apart.
+    var email: String? = nil
+
+    var path: String { desktopDataDir ?? codeConfigDir ?? "" }
+    var sourceLabel: String {
+        switch origin {
+        case .multiClaude: "Multi-Claude"
+        case .multipleClaude: "Multiple Claude"
+        case .cli: "Claude Code"
+        default: desktopDataDir != nil ? "Claude Desktop" : "Claude Code"
+        }
+    }
 }
 
 enum Importers {
@@ -62,6 +74,85 @@ enum Importers {
                 hasData: Paths.exists(dataDir + "/config.json")
             )
         }
+    }
+
+    // MARK: - Search
+
+    /// Looks through the home folder for Claude folders nobody told us about:
+    /// Claude Desktop data folders started with --user-data-dir, and Claude
+    /// Code folders used with CLAUDE_CONFIG_DIR. Folders are recognised by
+    /// what's inside them, not by their name.
+    static func search(skipping known: Set<String>) -> [ImportCandidate] {
+        let home = URL(fileURLWithPath: Paths.home)
+        let roots: [(URL, Int)] = [
+            (home.appendingPathComponent("Library/Application Support"), 4),
+            (home, 4),
+        ]
+        // Big trees that never hold a Claude profile, or belong to other apps.
+        let skip: Set<String> = [
+            "Library", "node_modules", ".git", ".Trash", ".cache", ".npm", ".pnpm-store", ".yarn",
+            ".cargo", ".rustup", ".gradle", ".m2", ".pyenv", ".nvm", ".bun", ".docker", ".local",
+            "Pictures", "Music", "Movies", "Photos Library.photoslibrary", "Containers",
+            "Group Containers", "Caches", "Google", "Chrome", "Code", "Slack", "Arc",
+        ]
+
+        var seen = known
+        var found: [ImportCandidate] = []
+
+        for (root, maxDepth) in roots {
+            guard let walker = Paths.fm.enumerator(at: root, includingPropertiesForKeys: [.isDirectoryKey, .isSymbolicLinkKey],
+                                                   options: [.skipsPackageDescendants]) else { continue }
+            for case let url as URL in walker {
+                let values = try? url.resourceValues(forKeys: [.isDirectoryKey, .isSymbolicLinkKey])
+                guard values?.isDirectory == true, values?.isSymbolicLink != true else { continue }
+                // ~/Library is walked on its own, only Application Support.
+                if skip.contains(url.lastPathComponent) { walker.skipDescendants(); continue }
+                if walker.level >= maxDepth { walker.skipDescendants() }
+                let path = ClaudeDesktop.normalize(url.path)
+                guard !seen.contains(path) else { walker.skipDescendants(); continue }
+
+                if isDesktopDataDir(path) {
+                    seen.insert(path)
+                    walker.skipDescendants()
+                    found.append(ImportCandidate(name: suggestedName(for: url, prefix: "Claude-"), color: .ocean,
+                                                 desktopDataDir: path, origin: .found,
+                                                 hasData: desktopSignedIn(dataDir: path)))
+                } else if isCodeConfigDir(path) {
+                    seen.insert(path)
+                    walker.skipDescendants()
+                    let auth = ClaudeCode.authStatus(configDir: path)
+                    found.append(ImportCandidate(name: suggestedName(for: url, prefix: ".claude-"), color: .leaf,
+                                                 codeConfigDir: path, origin: .found,
+                                                 hasData: auth.loggedIn, email: auth.email))
+                }
+            }
+        }
+        return found
+    }
+
+    /// Claude Desktop's data folder: Electron storage plus Claude's own files.
+    static func isDesktopDataDir(_ path: String) -> Bool {
+        Paths.exists(path + "/config.json")
+            && Paths.exists(path + "/Local Storage")
+            && (Paths.exists(path + "/claude_desktop_config.json") || Paths.exists(path + "/window-state.json"))
+    }
+
+    /// A Claude Code config folder: the account file or the session history.
+    static func isCodeConfigDir(_ path: String) -> Bool {
+        Paths.exists(path + "/.claude.json")
+            || (Paths.exists(path + "/history.jsonl") && Paths.exists(path + "/projects"))
+    }
+
+    private static func suggestedName(for url: URL, prefix: String) -> String {
+        var name = url.lastPathComponent
+        if name.hasPrefix(prefix) { name = String(name.dropFirst(prefix.count)) }
+        if ["desktop-data", "data", "claude", ".claude"].contains(name.lowercased()) {
+            name = url.deletingLastPathComponent().lastPathComponent
+        }
+        let cleaned = name.replacingOccurrences(of: "[^A-Za-z0-9_-]", with: "-", options: .regularExpression)
+            .trimmingCharacters(in: CharacterSet(charactersIn: "-_"))
+        let start = cleaned.drop { !$0.isLetter }
+        return start.isEmpty ? "Profile" : String(start.prefix(1).uppercased() + start.dropFirst()).prefix(32).description
     }
 
     /// Signed in at some point. Claude Desktop writes the account id here;

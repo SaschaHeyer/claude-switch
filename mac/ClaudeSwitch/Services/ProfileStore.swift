@@ -12,6 +12,11 @@ final class ProfileStore {
     var error: String?
     var showImport = false
     var showNewProfile = false
+    /// The sandbox needs the user to grant the home folder before anything loads.
+    private(set) var needsHomeAccess = false
+    private(set) var isSearching = false
+    /// Set once a search has run, so the sheet can say "nothing else found".
+    private(set) var searched = false
 
     var terminal: TerminalApp {
         didSet { UserDefaults.standard.set(terminal.rawValue, forKey: "terminal") }
@@ -25,15 +30,30 @@ final class ProfileStore {
         let saved = UserDefaults.standard.string(forKey: "terminal").flatMap(TerminalApp.init(rawValue:))
         terminal = saved ?? TerminalApp.installed.first ?? .terminal
         if demo { loadDemo(); return }
+        guard HomeAccess.restore() else { needsHomeAccess = true; return }
+        start()
+    }
+
+    func grantHomeAccess() {
+        guard HomeAccess.request() else {
+            error = "Pick your home folder (\(Paths.tilde(Paths.home))) so Claude Switch can see your profiles."
+            return
+        }
+        needsHomeAccess = false
+        start()
+    }
+
+    private func start() {
         load()
         refreshRunning()
         refreshAuth()
         timer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.refreshRunning() }
         }
-        if !importCandidates.isEmpty && !UserDefaults.standard.bool(forKey: "importOffered") {
-            showImport = true
+        // First run: look for profiles nobody told us about too, then offer them all.
+        if !UserDefaults.standard.bool(forKey: "importOffered") {
             UserDefaults.standard.set(true, forKey: "importOffered")
+            search(openSheet: true)
         }
     }
 
@@ -54,11 +74,14 @@ final class ProfileStore {
             profiles = [defaultProfile()]
         }
         adoptCLIProfiles()
-        importCandidates = Importers.all().filter { candidate in
-            !profiles.contains { $0.desktopDataDir.map(ClaudeDesktop.normalize) == ClaudeDesktop.normalize(candidate.desktopDataDir) }
-        }
+        importCandidates = Importers.all().filter { !isKnown($0) }
         selection = selection ?? profiles.first?.id
         save()
+    }
+
+    private func isKnown(_ candidate: ImportCandidate) -> Bool {
+        let dirs = Set(profiles.flatMap { [$0.desktopDataDir, $0.codeConfigDir] }.compactMap { $0 }.map(ClaudeDesktop.normalize))
+        return [candidate.desktopDataDir, candidate.codeConfigDir].compactMap { $0 }.contains { dirs.contains(ClaudeDesktop.normalize($0)) }
     }
 
     private func defaultProfile() -> Profile {
@@ -94,7 +117,6 @@ final class ProfileStore {
             Profile(name: "Side-project", color: .leaf, codeConfigDir: Paths.home + "/.claude-side-project", origin: .cli),
             Profile(name: "Team", color: .sun, desktopDataDir: lib + "Team", origin: .claudeSwitch),
         ]
-        profiles[0].dockAppPath = Paths.dockAppsDir.path + "/Work.app"
         runningDesktop = Set([profiles[0], profiles[1], profiles[4]].compactMap(\.desktopDataDir).map(ClaudeDesktop.normalize))
         codeAuth = [
             profiles[0].id: CodeAuth(loggedIn: true, email: "alex@company.com", plan: "team"),
@@ -103,6 +125,26 @@ final class ProfileStore {
             profiles[3].id: CodeAuth(loggedIn: true, email: "alex.builds@gmail.com", plan: "pro"),
         ]
         selection = profiles[0].id
+    }
+
+    /// Searches the home folder for Claude Desktop and Claude Code folders that
+    /// aren't profiles yet and adds them to the import list.
+    func search(openSheet: Bool = false) {
+        guard !isSearching else { return }
+        isSearching = true
+        let known = Set(profiles.flatMap { [$0.desktopDataDir, $0.codeConfigDir] }.compactMap { $0 }
+            + importCandidates.flatMap { [$0.desktopDataDir, $0.codeConfigDir] }.compactMap { $0 }
+            + [ClaudeDesktop.defaultDataDir, ClaudeDesktop.defaultCodeDir])
+            .map(ClaudeDesktop.normalize)
+        Task.detached(priority: .userInitiated) {
+            let found = Importers.search(skipping: Set(known))
+            await MainActor.run {
+                self.importCandidates.append(contentsOf: found)
+                self.isSearching = false
+                self.searched = true
+                if openSheet && !self.importCandidates.isEmpty { self.showImport = true }
+            }
+        }
     }
 
     func save() {
@@ -121,7 +163,9 @@ final class ProfileStore {
 
     func refreshRunning() {
         guard !demo else { return }
-        let now = Set(ClaudeDesktop.runningInstances().keys)
+        let now = Set(profiles.compactMap(\.desktopDataDir)
+            .filter { ClaudeDesktop.runningInstance(dataDir: $0) != nil }
+            .map(ClaudeDesktop.normalize))
         if now != runningDesktop { runningDesktop = now }
     }
 
@@ -131,7 +175,7 @@ final class ProfileStore {
         Task.detached(priority: .utility) {
             var result: [UUID: CodeAuth] = [:]
             for (id, dir) in targets {
-                if let auth = ClaudeCode.authStatus(configDir: dir) { result[id] = auth }
+                result[id] = ClaudeCode.authStatus(configDir: dir)
             }
             let found = result
             await MainActor.run { self.codeAuth = found }
@@ -160,7 +204,7 @@ final class ProfileStore {
 
     func quitDesktop(_ profile: Profile) {
         guard let dir = profile.desktopDataDir else { return }
-        ClaudeDesktop.runningInstances()[ClaudeDesktop.normalize(dir)]?.terminate()
+        ClaudeDesktop.runningInstance(dataDir: dir)?.terminate()
         Task {
             try? await Task.sleep(for: .seconds(1.5))
             refreshRunning()
@@ -190,7 +234,6 @@ final class ProfileStore {
         var color: ProfileColor = .coral
         var desktop = true
         var code = true
-        var dockApp = true
         var zshAlias = true
     }
 
@@ -207,58 +250,46 @@ final class ProfileStore {
         if spec.code {
             profile.codeConfigDir = try ClaudeCode.createProfile(name: spec.name, addAlias: spec.zshAlias)
         }
-        if spec.desktop && spec.dockApp {
-            profile.dockAppPath = try? DockApps.create(for: profile)
-        }
         profiles.append(profile)
         selection = profile.id
         save()
         refreshAuth()
     }
 
-    func importProfiles(_ candidates: [ImportCandidate], makeDockApps: Bool) {
-        var failures: [String] = []
-        func dockApp(for profile: Profile) -> String? {
-            do { return try DockApps.create(for: profile) } catch {
-                failures.append("\(profile.name): \(error.localizedDescription)")
-                return nil
-            }
-        }
+    func importProfiles(_ candidates: [ImportCandidate]) {
         for candidate in candidates {
-            var name = candidate.name
-            var suffix = 2
-            while profiles.contains(where: { $0.name.caseInsensitiveCompare(name) == .orderedSame && $0.hasDesktop }) {
-                name = "\(candidate.name)-\(suffix)"; suffix += 1
-            }
-            // A Code profile of the same name (from the CLI) becomes the other half.
-            if let index = profiles.firstIndex(where: { !$0.hasDesktop && $0.name.caseInsensitiveCompare(name) == .orderedSame }) {
-                profiles[index].desktopDataDir = candidate.desktopDataDir
-                profiles[index].color = candidate.color
-                if makeDockApps { profiles[index].dockAppPath = dockApp(for: profiles[index]) }
+            let isDesktop = candidate.desktopDataDir != nil
+            // A profile of the same name missing this half gets it: a CLI "work"
+            // and a Desktop "work" become one profile.
+            if let index = profiles.firstIndex(where: {
+                $0.name.caseInsensitiveCompare(candidate.name) == .orderedSame && (isDesktop ? !$0.hasDesktop : !$0.hasCode)
+            }) {
+                if isDesktop {
+                    profiles[index].desktopDataDir = candidate.desktopDataDir
+                    profiles[index].color = candidate.color
+                }
+                if let code = candidate.codeConfigDir, !profiles[index].hasCode { profiles[index].codeConfigDir = code }
                 continue
             }
-            var profile = Profile(name: name, color: candidate.color, desktopDataDir: candidate.desktopDataDir,
-                                  codeConfigDir: candidate.codeConfigDir, origin: candidate.origin)
-            if makeDockApps { profile.dockAppPath = dockApp(for: profile) }
-            profiles.append(profile)
+            var name = candidate.name
+            var suffix = 2
+            while profiles.contains(where: { $0.name.caseInsensitiveCompare(name) == .orderedSame }) {
+                name = "\(candidate.name)-\(suffix)"; suffix += 1
+            }
+            profiles.append(Profile(name: name, color: candidate.origin == .found ? .next(after: profiles.map(\.color)) : candidate.color,
+                                    desktopDataDir: candidate.desktopDataDir, codeConfigDir: candidate.codeConfigDir,
+                                    origin: candidate.origin))
         }
         let imported = Set(candidates.map(\.id))
         importCandidates.removeAll { imported.contains($0.id) }
         save()
         refreshAuth()
-        if !failures.isEmpty { error = "Imported, but some Dock apps failed.\n" + failures.joined(separator: "\n") }
+        refreshRunning()
     }
 
     func update(_ profile: Profile) {
         guard let index = profiles.firstIndex(where: { $0.id == profile.id }) else { return }
-        let old = profiles[index]
         profiles[index] = profile
-        // The Dock app bakes in color, letter and folders.
-        if old.dockAppPath != nil,
-           old.color != profile.color || old.desktopCodeDir != profile.desktopCodeDir || old.name != profile.name {
-            if let path = old.dockAppPath { DockApps.remove(at: path) }
-            profiles[index].dockAppPath = try? DockApps.create(for: profiles[index])
-        }
         save()
     }
 
@@ -281,23 +312,11 @@ final class ProfileStore {
         update(updated)
     }
 
-    func makeDockApp(_ profile: Profile) {
-        do {
-            var updated = profile
-            updated.dockAppPath = try DockApps.create(for: profile)
-            update(updated)
-            NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: updated.dockAppPath!)])
-        } catch {
-            self.error = error.localizedDescription
-        }
-    }
-
     /// Removes the profile. With `trashData`, its folders go to the Trash
     /// (recoverable), never for the main profile or folders another tool owns.
     func delete(_ profile: Profile, trashData: Bool) {
         guard !profile.isDefault else { return }
         if isRunning(profile) { quitDesktop(profile) }
-        if let path = profile.dockAppPath { DockApps.remove(at: path) }
         if trashData {
             if let dir = profile.desktopDataDir, profile.origin == .claudeSwitch || profile.origin == .cli {
                 try? FileManager.default.trashItem(at: URL(fileURLWithPath: dir), resultingItemURL: nil)
@@ -309,9 +328,7 @@ final class ProfileStore {
         }
         profiles.removeAll { $0.id == profile.id }
         if selection == profile.id { selection = profiles.first?.id }
-        importCandidates = Importers.all().filter { c in
-            !profiles.contains { $0.desktopDataDir.map(ClaudeDesktop.normalize) == ClaudeDesktop.normalize(c.desktopDataDir) }
-        }
+        importCandidates = Importers.all().filter { !isKnown($0) }
         save()
     }
 

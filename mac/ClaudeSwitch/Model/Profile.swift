@@ -12,7 +12,6 @@ struct Profile: Codable, Identifiable, Hashable {
     var codeConfigDir: String?
     /// Hand the Code profile to Desktop, so its Code tab uses the same login.
     var desktopUsesCodeProfile = true
-    var dockAppPath: String?
     var origin: ProfileOrigin
     var createdAt = Date()
     var lastLaunched: Date?
@@ -27,7 +26,7 @@ struct Profile: Codable, Identifiable, Hashable {
 }
 
 enum ProfileOrigin: String, Codable {
-    case system, claudeSwitch, cli, multiClaude, multipleClaude
+    case system, claudeSwitch, cli, multiClaude, multipleClaude, found
 
     var label: String {
         switch self {
@@ -36,6 +35,7 @@ enum ProfileOrigin: String, Codable {
         case .cli: "claude-switch CLI"
         case .multiClaude: "Imported from Multi-Claude"
         case .multipleClaude: "Imported from Multiple Claude"
+        case .found: "Found on your Mac"
         }
     }
 }

@@ -1,19 +1,23 @@
 import Foundation
 
 enum Paths {
-    static let home = NSHomeDirectory()
+    /// The real home folder. Inside the App Sandbox NSHomeDirectory() is the
+    /// app's container, so ask the user database instead.
+    static let home: String = {
+        if let pw = getpwuid(getuid()), let dir = pw.pointee.pw_dir { return String(cString: dir) }
+        return NSHomeDirectory()
+    }()
     static let fm = FileManager.default
 
+    /// Our own files. In the sandbox this lands inside the app's container.
     static var appSupport: URL {
-        let url = URL(fileURLWithPath: home + "/Library/Application Support/Claude Switch")
+        let base = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+        let url = base.appendingPathComponent("Claude Switch")
         try? fm.createDirectory(at: url, withIntermediateDirectories: true)
         return url
     }
 
     static var profilesFile: URL { appSupport.appendingPathComponent("profiles.json") }
-
-    /// Profile Dock apps. ~/Applications is indexed by Spotlight and Launchpad.
-    static var dockAppsDir: URL { URL(fileURLWithPath: home + "/Applications/Claude Switch") }
 
     /// Same naming as Multi-Claude, so the folders read the same in Finder.
     static func desktopDataDir(for name: String) -> String {

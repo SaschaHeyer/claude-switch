@@ -58,7 +58,6 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Eyebrow("Where things live")
                 PathRow(label: "Profiles list", path: Paths.profilesFile.path)
-                PathRow(label: "Dock apps", path: Paths.dockAppsDir.path)
             }
             if !store.importCandidates.isEmpty {
                 Button("Import \(store.importCandidates.count) profile(s)…") { store.showImport = true }

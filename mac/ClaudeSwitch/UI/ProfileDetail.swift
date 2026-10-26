@@ -115,9 +115,6 @@ struct ProfileDetail: View {
 
             if let dir = profile.desktopDataDir {
                 PathRow(label: "Data folder", path: dir)
-                if let app = profile.dockAppPath, Paths.exists(app) {
-                    PathRow(label: "Dock app", path: app)
-                }
 
                 if let code = profile.codeConfigDir, ClaudeDesktop.normalize(code) != ClaudeDesktop.defaultCodeDir {
                     Toggle(isOn: Binding(
@@ -138,11 +135,6 @@ struct ProfileDetail: View {
                         .buttonStyle(.pill(.ink, size: 13))
                     if running {
                         Button("Quit") { store.quitDesktop(profile) }.buttonStyle(.pill(.ghost, size: 13))
-                    }
-                    Spacer(minLength: 0)
-                    if profile.dockAppPath == nil || !Paths.exists(profile.dockAppPath!) {
-                        Button("Make Dock app") { store.makeDockApp(profile) }.buttonStyle(.pill(.ghost, size: 13))
-                            .help("Adds \(profile.name).app to ~/Applications/Claude Switch. Pin it to your Dock or find it in Spotlight.")
                     }
                 }
             } else {
