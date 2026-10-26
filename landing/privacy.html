@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy · Switch for Claude</title>
+<meta name="description" content="Switch for Claude collects no data. Everything stays on your Mac.">
+<link rel="icon" href="app-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300;12..96,75..100,800&family=Figtree:wght@500;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root { --tangerine: #ff6b2c; --paper: #fff5ec; --ink: #17120e; --ink-soft: #5c4d41; color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 500 1.0625rem/1.65 Figtree, system-ui, -apple-system, sans-serif; }
+header { background: var(--tangerine); border-bottom: 2px solid var(--ink); padding: 18px 16px 56px; }
+.inner { max-width: 760px; margin: 0 auto; }
+.wordmark { display: inline-flex; align-items: center; gap: 10px; font: 800 1.5rem "Bricolage Grotesque", sans-serif; letter-spacing: -0.035em; text-decoration: none; color: inherit; }
+.wordmark img { width: 34px; height: 34px; }
+.wordmark span { font-weight: 300; }
+h1, h2 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin: 0; }
+h1 { font-size: clamp(2.6rem, 8vw, 4.4rem); margin-top: 48px; }
+h2 { font-size: 1.6rem; margin: 40px 0 10px; }
+.eyebrow { font: 500 0.78rem "IBM Plex Mono", monospace; letter-spacing: 0.14em; text-transform: uppercase; margin-top: 12px; }
+main { padding: 8px 16px 72px; }
+p, li { color: var(--ink-soft); }
+p { margin: 0 0 12px; }
+strong { color: var(--ink); }
+code { font: 500 0.9em "IBM Plex Mono", monospace; }
+.box { background: #fff; border: 2px solid var(--ink); border-radius: 20px; box-shadow: 0 4px 0 var(--ink); padding: 22px 24px; margin-top: 32px; }
+.box p { color: var(--ink); font-size: 1.15rem; margin: 0; }
+a { color: inherit; }
+footer { border-top: 2px solid var(--ink); padding: 24px 16px; font-size: 0.92rem; }
+</style>
+</head>
+<body>
+<header>
+  <div class="inner">
+    <a class="wordmark" href="/"><img src="app-icon.png" alt="" width="34" height="34">switch <span>for claude</span></a>
+    <h1>Privacy Policy</h1>
+    <p class="eyebrow">Last updated October 26, 2026</p>
+  </div>
+</header>
+<main>
+  <div class="inner">
+    <div class="box"><p><strong>Short version:</strong> Switch for Claude collects nothing. It has no account, no analytics and no servers. Everything it does happens on your Mac.</p></div>
+
+    <h2>What the app reads</h2>
+    <p>To list and open your Claude profiles, Switch for Claude reads folders on your Mac. You grant it access to your home folder once, when you first open the app. It looks at:</p>
+    <ul>
+      <li>Claude Desktop data folders, such as <code>~/Library/Application Support/Claude-Work</code>, to see whether a profile exists and whether it's open.</li>
+      <li>Claude Code config folders, such as <code>~/.claude-work</code>, including the account email and plan saved there, so it can show which account each profile uses.</li>
+      <li>Profile lists made by other tools, such as Multi-Claude, so you can bring those profiles over.</li>
+    </ul>
+    <p>The app never reads your sign-in tokens or passwords. Those stay in your macOS Keychain, managed by Claude itself.</p>
+
+    <h2>What the app stores</h2>
+    <p>Your list of profiles (names, colors and folder locations) is saved inside the app's own folder on your Mac. When you create a profile, the app creates its folders in your home folder. If you choose it, it adds a <code>claude-&lt;name&gt;</code> shortcut to your <code>~/.zshrc</code> file.</p>
+
+    <h2>What leaves your Mac</h2>
+    <p>Nothing. Switch for Claude makes no network connections of its own. When you open a profile, it starts Claude Desktop or Claude Code, which connect to Anthropic as they always do under Anthropic's own privacy policy.</p>
+
+    <h2>Purchases</h2>
+    <p>You buy Switch for Claude through the Mac App Store. Apple handles the payment, and we receive no personal details about you from it.</p>
+
+    <h2>Children</h2>
+    <p>The app collects no data from anyone, including children.</p>
+
+    <h2>Changes</h2>
+    <p>If this policy changes, the new version will be posted on this page with a new date.</p>
+
+    <h2>Contact</h2>
+    <p>Questions? Open an issue at <a href="https://github.com/SaschaHeyer/claude-switch/issues">github.com/SaschaHeyer/claude-switch</a>.</p>
+  </div>
+</main>
+<footer>
+  <div class="inner">Switch for Claude is an independent tool and isn't affiliated with Anthropic.</div>
+</footer>
+</body>
+</html>
