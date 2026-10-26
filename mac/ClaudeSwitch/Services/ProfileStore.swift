@@ -36,7 +36,7 @@ final class ProfileStore {
 
     func grantHomeAccess() {
         guard HomeAccess.request() else {
-            error = "Pick your home folder (\(Paths.tilde(Paths.home))) so Claude Switch can see your profiles."
+            error = "Claude Switch needs your home folder “\((Paths.home as NSString).lastPathComponent)”. Try again and click Allow access without selecting a folder inside it."
             return
         }
         needsHomeAccess = false

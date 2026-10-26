@@ -209,7 +209,7 @@ struct HomeAccessView: View {
                 }
                 .buttonStyle(.pill(.ink, size: 17))
                 .keyboardShortcut(.defaultAction)
-                Text("In the window that opens, your home folder is already selected. Just click Allow access.")
+                Text("macOS will show your home folder next. Don't pick anything in it, just click Allow access. You only do this once.")
                     .font(.body(13)).foregroundStyle(Brand.ink.opacity(0.65))
             }
             ZStack {
