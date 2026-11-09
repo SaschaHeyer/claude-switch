@@ -15,7 +15,7 @@
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       locale: navigator.language
     });
-    navigator.sendBeacon('https://claude-switch-telemetry-276770087447.europe-west1.run.app/visit',
+    navigator.sendBeacon('https://claude-switch-telemetry-507906352164.europe-west1.run.app/visit',
       new Blob([body], { type: 'text/plain' }));
   } catch (e) {
     // Statistics never get in the way of the page.
