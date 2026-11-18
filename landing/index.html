@@ -158,6 +158,15 @@ section.block { padding-block: clamp(64px, 10vw, 120px); }
 /* Switch band */
 .switch-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(28px, 6vw, 80px); align-items: center; }
 .switch-grid h2 { font-size: clamp(2.6rem, 6vw, 5rem); }
+
+/* Clean up */
+.leafband { background: var(--leaf); color: var(--paper); }
+.cleanup-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+.cleanup-grid h2 { font-size: clamp(2.6rem, 6vw, 5rem); }
+.cleanup-grid .ticks { margin-top: 6px; }
+.cleanup-grid .ticks li::before { background-color: var(--ink); border-color: var(--paper); }
+.cleanup-grid .note { font-size: 0.95rem; opacity: 0.85; max-width: 52ch; }
+.cleanup-grid .shot { margin-bottom: 0; transform: rotate(1.2deg); animation: none; }
 .flow { display: flex; flex-direction: column; gap: 12px; }
 .flow-row {
   display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 18px;
@@ -202,7 +211,7 @@ footer { padding-block: 28px; border-top: 2px solid var(--ink); font-size: 0.92r
 footer .inner { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; }
 
 @media (max-width: 900px) {
-  .cards, .steps, .price-grid, .switch-grid { grid-template-columns: minmax(0, 1fr); }
+  .cards, .steps, .price-grid, .switch-grid, .cleanup-grid { grid-template-columns: minmax(0, 1fr); }
   .card.tall { grid-row: auto; }
   .navlinks a:not(.btn):not(.stars) { display: none; }
   .shot { margin-bottom: -40px; }
@@ -222,6 +231,7 @@ footer .inner { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content:
     <a class="wordmark" href="#"><img src="app-icon.png" alt="" width="38" height="38">claude<span>switch</span></a>
     <div class="navlinks">
       <a href="#how">How it works</a>
+      <a href="#cleanup">Clean up</a>
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
       <a class="stars" href="https://github.com/SaschaHeyer/claude-switch" aria-label="Star on GitHub">
@@ -312,6 +322,26 @@ footer .inner { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content:
         <div class="flow-row"><div class="chip" style="background:var(--violet)">P</div><div><b>Personal</b><span class="mono">~/Library/Application Support/Claude-Personal</span></div><span class="tick">found</span></div>
         <div class="flow-row"><div class="chip" style="background:var(--coral)">W</div><div><b>Work</b><span class="mono">~/Library/Application Support/Claude-work</span></div><span class="tick">found</span></div>
         <div class="flow-row"><div class="chip" style="background:var(--ocean)">C</div><div><b>Client</b><span class="mono">~/.claude-client</span></div><span class="tick">found</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band leafband block" id="cleanup">
+    <div class="inner cleanup-grid">
+      <div class="section-head" style="margin:0">
+        <p class="eyebrow">New in 1.1</p>
+        <h2>Clean up what Claude <em>left behind.</em></h2>
+        <p>Every Claude session in a worktree is a full copy of your repository, and closed sessions leave dev servers running. See it all, per account, and clear it in a click.</p>
+        <ul class="ticks">
+          <li>Old worktrees, oldest or largest first, with what's safe to remove</li>
+          <li>Sessions, logs and caches of every profile, measured</li>
+          <li>Old Claude Desktop sessions, oldest first, archived or deleted in bulk</li>
+          <li>Dev servers and browsers left running, ended in one click</li>
+        </ul>
+        <p class="note">Everything goes to the Trash. A worktree only counts as safe when it has no changes, every commit is also on another branch or the remote, and nothing is running in it.</p>
+      </div>
+      <div class="shot">
+        <img src="cleanup.png" width="1600" height="1047" loading="lazy" alt="Clean up in Switch for Claude: worktrees with their size and whether they are safe to remove, and a button that moves the safe ones to the Trash.">
       </div>
     </div>
   </section>
