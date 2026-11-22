@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Switch Claude Code accounts: 4 ways compared · Claude Switch</title>
+<meta name="description" content="How to switch between Claude Code accounts: CLAUDE_CONFIG_DIR aliases, the claude-swap CLI, /logout and /login, or the Claude Switch Mac app. What each does well, side by side.">
+<link rel="canonical" href="https://claudeswitch.dev/compare.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Switch Claude Code accounts: 4 ways compared">
+<meta property="og:description" content="CLAUDE_CONFIG_DIR aliases, claude-swap, /logout and /login, and Claude Switch, side by side.">
+<meta property="og:image" content="https://claudeswitch.dev/og-image.png">
+<meta property="og:url" content="https://claudeswitch.dev/compare.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="app-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300;12..96,75..100,800&family=Figtree:wght@500;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root { --tangerine: #ff6b2c; --paper: #fff5ec; --cream: #ffe7d3; --ink: #17120e; --ink-soft: #5c4d41; --leaf: #1f9d63; color-scheme: light; }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 500 1.0625rem/1.65 Figtree, system-ui, -apple-system, sans-serif; overflow-x: hidden; }
+header { background: var(--tangerine); border-bottom: 2px solid var(--ink); padding: 18px 16px 56px; }
+.inner { max-width: 960px; margin: 0 auto; }
+.nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.wordmark { display: inline-flex; align-items: center; gap: 10px; font: 800 1.5rem "Bricolage Grotesque", sans-serif; letter-spacing: -0.035em; text-decoration: none; color: inherit; }
+.wordmark img { width: 34px; height: 34px; }
+.wordmark span { font-weight: 300; }
+h1, h2, h3 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin: 0; text-wrap: balance; }
+h1 em, h2 em { font-style: normal; font-weight: 300; }
+h1 { font-size: clamp(2.4rem, 7vw, 4.2rem); margin-top: 48px; max-width: 15ch; }
+h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin: 56px 0 14px; }
+h3 { font-size: 1.35rem; margin: 0 0 8px; }
+.eyebrow { font: 500 0.78rem "IBM Plex Mono", monospace; letter-spacing: 0.14em; text-transform: uppercase; margin-top: 12px; }
+.lede { font-size: 1.2rem; max-width: 46ch; margin: 18px 0 0; }
+main { padding: 8px 16px 72px; }
+p, li { color: var(--ink-soft); }
+header p { color: var(--ink); }
+p { margin: 0 0 12px; }
+strong { color: var(--ink); }
+code { font: 500 0.88em "IBM Plex Mono", monospace; overflow-wrap: anywhere; }
+pre { background: var(--ink); color: var(--paper); border-radius: 14px; padding: 14px 16px; overflow-x: auto; margin: 0 0 14px; }
+pre code { font-size: 0.85rem; overflow-wrap: normal; }
+a { color: inherit; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.55em; font: 700 1.02rem/1 Figtree, sans-serif; padding: 1.05em 1.55em; border-radius: 999px; border: 2px solid var(--ink); text-decoration: none; background: var(--ink); color: var(--paper); transition: transform 0.15s ease; }
+.btn:hover { transform: translateY(-2px); }
+.btn-small { padding: 0.7em 1.15em; font-size: 0.95rem; }
+.box { background: #fff; border: 2px solid var(--ink); border-radius: 20px; box-shadow: 0 4px 0 var(--ink); padding: 22px 24px; margin-top: 32px; }
+.box p { color: var(--ink); margin: 0; }
+.table-wrap { overflow-x: auto; border: 2px solid var(--ink); border-radius: 20px; box-shadow: 0 4px 0 var(--ink); background: #fff; margin-top: 8px; }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 0.95rem; }
+th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--cream); }
+thead th { font: 800 1.02rem/1.15 "Bricolage Grotesque", sans-serif; letter-spacing: -0.02em; background: var(--cream); border-bottom: 2px solid var(--ink); }
+thead th.us { background: var(--tangerine); }
+tbody th { font-weight: 700; color: var(--ink); width: 22%; }
+tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+td { color: var(--ink-soft); }
+.yes { color: var(--leaf); font-weight: 700; }
+.no { color: var(--ink-soft); font-weight: 700; }
+.option { background: #fff; border: 2px solid var(--ink); border-radius: 20px; padding: 22px 24px; margin-top: 18px; }
+.option.us { background: var(--tangerine); }
+.option.us p, .option.us li { color: var(--ink); }
+.option ul { margin: 6px 0 12px; padding-left: 1.2em; }
+.pick { font-weight: 700; color: var(--ink); }
+.note { font-size: 0.92rem; }
+details { border-top: 2px solid var(--ink); padding: 14px 0; }
+details:last-of-type { border-bottom: 2px solid var(--ink); }
+summary { cursor: pointer; font-weight: 700; color: var(--ink); }
+details p { margin: 10px 0 0; }
+.final { text-align: center; margin-top: 56px; }
+.final h2 { margin-top: 0; }
+footer { border-top: 2px solid var(--ink); padding: 24px 16px; font-size: 0.92rem; }
+footer .inner { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 8px; }
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can Claude Code be signed in to two accounts at the same time?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Not in one config folder. Claude Code keeps one login per config folder, so running two accounts at once means one config folder per account, set with the CLAUDE_CONFIG_DIR environment variable. Shell aliases, claude-swap's session mode and Claude Switch all build on that." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a free way to switch Claude Code accounts?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. /logout and /login are built in, a CLAUDE_CONFIG_DIR alias is one line in your shell config, and claude-swap and the claude-switch CLI are free and open source." }
+    },
+    {
+      "@type": "Question",
+      "name": "What about Claude Desktop?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Claude Desktop keeps one account per data folder. To switch in the app you log out and back in. Claude Switch opens Claude Desktop with a separate data folder per profile, so several accounts can be open in their own windows at once. claude-swap and CLAUDE_CONFIG_DIR aliases cover Claude Code only." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I have to restart Claude Code after switching?",
+      "acceptedAnswer": { "@type": "Answer", "text": "With separate config folders there is nothing to restart: each terminal runs its own account. With claude-swap's switch command, the README says a running session on macOS picks up the new account once Claude Code's Keychain cache expires, after about 30 seconds, and a restart applies it at once." }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<header>
+  <div class="inner">
+    <nav class="nav" aria-label="Main">
+      <a class="wordmark" href="/"><img src="app-icon.png" alt="" width="34" height="34">claude <span>switch</span></a>
+      <a class="btn btn-small" href="https://apps.apple.com/app/id6827070714" data-store="compare-nav">Get it · $4.99</a>
+    </nav>
+    <h1>Switching Claude Code accounts. <em>Four ways, compared.</em></h1>
+    <p class="lede">Work account, personal account, a client. Here is what each way of switching between them does well, where it falls short, and who it suits. Ours is one of them, and it isn't always the right pick.</p>
+    <p class="eyebrow">Checked November 22, 2026</p>
+  </div>
+</header>
+
+<main>
+  <div class="inner">
+    <div class="box"><p><strong>Short version:</strong> one account now and then, use <code>/logout</code> and <code>/login</code>. Terminal only and happy in a shell config, use a <code>CLAUDE_CONFIG_DIR</code> alias. You want usage numbers and automatic switching near rate limits, use claude-swap. You want Claude Desktop and Claude Code accounts open side by side with one click on a Mac, use Claude Switch.</p></div>
+
+    <h2>Side by side</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col"><span class="eyebrow" style="margin:0">Feature</span></th>
+            <th scope="col" class="us">Claude Switch</th>
+            <th scope="col">CLAUDE_CONFIG_DIR aliases</th>
+            <th scope="col">claude-swap</th>
+            <th scope="col">/logout + /login</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Claude Code accounts</th><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes, plus the VS Code extension</td><td class="yes">Yes</td></tr>
+          <tr><th scope="row">Claude Desktop accounts</th><td class="yes">Yes, each in its own window</td><td class="no">No (you can script it yourself)</td><td class="no">No</td><td>Log out and in inside the app</td></tr>
+          <tr><th scope="row">Several accounts open at once</th><td class="yes">Yes</td><td class="yes">Yes, one per terminal</td><td class="yes">Yes, with <code>cswap run</code></td><td class="no">No</td></tr>
+          <tr><th scope="row">Sign in again to switch</th><td>No, once per profile</td><td>No, once per folder</td><td>No, once per account</td><td>Yes, in the browser, every time</td></tr>
+          <tr><th scope="row">Shows which account you get</th><td class="yes">Email and plan per profile</td><td class="no">No</td><td class="yes">Yes, in <code>cswap list</code></td><td class="no">No</td></tr>
+          <tr><th scope="row">Usage across accounts</th><td class="no">No</td><td class="no">No</td><td class="yes">Yes, 5-hour and 7-day</td><td class="no">No</td></tr>
+          <tr><th scope="row">Switches before a rate limit</th><td class="no">No</td><td class="no">No</td><td class="yes">Yes, <code>cswap auto</code></td><td class="no">No</td></tr>
+          <tr><th scope="row">Skills, settings, CLAUDE.md</th><td>Shared across profiles</td><td>Separate unless you symlink them</td><td>Shared by default</td><td>One setup</td></tr>
+          <tr><th scope="row">Runs on</th><td>macOS</td><td>Any shell</td><td>macOS, Linux, Windows</td><td>Wherever Claude Code runs</td></tr>
+          <tr><th scope="row">Setup</th><td>Mac app, one click per profile</td><td>One line per account in your shell config</td><td>Python 3.12+, install with uv or pipx</td><td>None</td></tr>
+          <tr><th scope="row">Price</th><td>$4.99 once</td><td>Free</td><td>Free, open source (MIT)</td><td>Free, built in</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:12px">Based on each tool's own documentation on the date above. Tools change, so check their pages before you decide.</p>
+
+    <h2>Each option, honestly</h2>
+
+    <section class="option">
+      <h3>/logout + /login</h3>
+      <p>Built into Claude Code. Run <code>/logout</code>, then <code>/login</code>, and sign in to the other account in your browser.</p>
+      <ul>
+        <li><strong>Good:</strong> nothing to install, nothing to configure.</li>
+        <li><strong>Less good:</strong> one account at a time, and a browser sign-in on every switch. The claude-swap README also warns that current Claude Code may revoke the refresh token of the account you log out of, so going back means signing in again.</li>
+        <li><strong>Claude Desktop</strong> works the same way: one account per app, switch by logging out and in. A feature request for multi-account support in the Mac app (<a href="https://github.com/anthropics/claude-code/issues/32783">anthropics/claude-code#32783</a>) describes exactly that.</li>
+      </ul>
+      <p class="pick">Pick it if you switch rarely.</p>
+    </section>
+
+    <section class="option">
+      <h3>CLAUDE_CONFIG_DIR shell aliases</h3>
+      <p>Claude Code reads its config, and its login, from the folder in <code>CLAUDE_CONFIG_DIR</code>. Give every account its own folder and an alias:</p>
+      <pre><code>alias claude-work='CLAUDE_CONFIG_DIR=~/.claude-work claude'
+alias claude-personal='CLAUDE_CONFIG_DIR=~/.claude-personal claude'</code></pre>
+      <ul>
+        <li><strong>Good:</strong> free, no extra tool, and every account can run at the same time in its own terminal. You sign in once per folder.</li>
+        <li><strong>Less good:</strong> each folder starts empty, so skills, settings and <code>CLAUDE.md</code> are separate unless you symlink them from <code>~/.claude</code>. Nothing tells you which folder holds which account. Claude Desktop is not covered.</li>
+      </ul>
+      <p>This is the mechanism under every other multi-account option here, including ours. Our free, open source <a href="https://github.com/SaschaHeyer/claude-switch">claude-switch CLI</a> wraps it, with the shared folders symlinked for you, on macOS and Linux.</p>
+      <p class="pick">Pick it if you only use Claude Code in a terminal and like owning your setup.</p>
+    </section>
+
+    <section class="option">
+      <h3>claude-swap</h3>
+      <p>A free, open source command line tool (<a href="https://github.com/realiti4/claude-swap">realiti4/claude-swap</a>) that stores the login of each account and swaps the active one with <code>cswap switch</code>.</p>
+      <ul>
+        <li><strong>Good:</strong> a usage dashboard with 5-hour and 7-day limits for every account, automatic switching before you hit a limit, a session mode (<code>cswap run</code>) for accounts side by side, an optional menu bar, and it covers the VS Code extension. Runs on macOS, Linux and Windows.</li>
+        <li><strong>Less good:</strong> a swap changes the account for every Claude Code using your default login. On macOS a running session picks it up once the Keychain cache expires, about 30 seconds per the README, or right away after a restart. It needs Python 3.12+, and Claude Desktop is not covered.</li>
+      </ul>
+      <p class="pick">Pick it if you rotate accounts to stretch rate limits, or work on Linux or Windows.</p>
+    </section>
+
+    <section class="option us">
+      <h3>Claude Switch (Switch for Claude)</h3>
+      <p>A Mac app that gives every account its own profile. A profile opens Claude Desktop in its own window with its own login, and Claude Code in Terminal, iTerm, Ghostty or Warp, signed in to the same account.</p>
+      <ul>
+        <li><strong>Good:</strong> Claude Desktop and Claude Code in one place, all accounts open at once, email and plan shown per profile, every profile one click away in the menu bar. Skills, settings and <code>CLAUDE.md</code> stay shared. It finds profiles you already made with Multi-Claude, Multiple Claude or the claude-switch CLI and opens them where they are. No account, no analytics, logins stay in your macOS Keychain.</li>
+        <li><strong>Less good:</strong> Mac only, and it costs $4.99 once. It shows no usage numbers and doesn't switch for you near a rate limit. Under the hood it uses the same folders as the alias route, so if you only live in a terminal, an alias does the Claude Code part for free.</li>
+      </ul>
+      <p class="pick">Pick it if you use Claude Desktop, or want all your accounts a click away without shell setup.</p>
+      <a class="btn" href="https://apps.apple.com/app/id6827070714" data-store="compare-option">Get it on the App Store · $4.99</a>
+    </section>
+
+    <h2>Questions</h2>
+    <details>
+      <summary>Can Claude Code be signed in to two accounts at the same time?</summary>
+      <p>Not in one config folder. Claude Code keeps one login per config folder, so running two accounts at once means one config folder per account, set with the <code>CLAUDE_CONFIG_DIR</code> environment variable. Shell aliases, claude-swap's session mode and Claude Switch all build on that.</p>
+    </details>
+    <details>
+      <summary>Is there a free way to switch Claude Code accounts?</summary>
+      <p>Yes. <code>/logout</code> and <code>/login</code> are built in, a <code>CLAUDE_CONFIG_DIR</code> alias is one line in your shell config, and claude-swap and the claude-switch CLI are free and open source.</p>
+    </details>
+    <details>
+      <summary>What about Claude Desktop?</summary>
+      <p>Claude Desktop keeps one account per data folder. To switch in the app you log out and back in. Claude Switch opens Claude Desktop with a separate data folder per profile, so several accounts can be open in their own windows at once. claude-swap and <code>CLAUDE_CONFIG_DIR</code> aliases cover Claude Code only.</p>
+    </details>
+    <details>
+      <summary>Do I have to restart Claude Code after switching?</summary>
+      <p>With separate config folders there is nothing to restart: each terminal runs its own account. With claude-swap's switch command, the README says a running session on macOS picks up the new account once Claude Code's Keychain cache expires, after about 30 seconds, and a restart applies it at once.</p>
+    </details>
+
+    <section class="final">
+      <h2>Every Claude account. <em>One click each.</em></h2>
+      <p>Claude Desktop and Claude Code, side by side on your Mac. $4.99 once, no subscription.</p>
+      <a class="btn" href="https://apps.apple.com/app/id6827070714" data-store="compare-final">Get it on the App Store · $4.99</a>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="inner">
+    <span>Claude Switch is an independent tool and isn't affiliated with Anthropic. claude-swap is a separate project by its own authors.</span>
+    <span><a href="/">Home</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="mailto:hello@claudeswitch.dev">hello@claudeswitch.dev</a></span>
+  </div>
+</footer>
+<script src="visit.js" defer></script>
+</body>
+</html>
