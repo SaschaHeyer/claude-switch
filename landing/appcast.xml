@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+  <channel>
+    <title>Switch for Claude</title>
+    <link>https://claudeswitch.dev/appcast.xml</link>
+    <item>
+      <title>Version 1.2</title>
+      <pubDate>Tue, 24 Nov 2026 11:11:41 +0000</pubDate>
+      <sparkle:version>6</sparkle:version>
+      <sparkle:shortVersionString>1.2</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Switch for Claude now comes from claudeswitch.dev, with updates built in.</p>]]></description>
+      <enclosure url="https://claudeswitch.dev/SwitchForClaude-1.2.dmg" sparkle:edSignature="x6SNyT02xg3010eFHjFZTLbEKCcKyYbt4x/0A0OSxr3xZmgAq1TS0fKlON8JfjfVVvWfp2LCjbmWlHmiz+uNAQ==" length="2978323" type="application/octet-stream"/>
+    </item>
+  </channel>
+</rss>

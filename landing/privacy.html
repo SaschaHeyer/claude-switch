@@ -38,15 +38,15 @@ footer { border-top: 2px solid var(--ink); padding: 24px 16px; font-size: 0.92re
   <div class="inner">
     <a class="wordmark" href="/"><img src="app-icon.png" alt="" width="34" height="34">switch <span>for claude</span></a>
     <h1>Privacy Policy</h1>
-    <p class="eyebrow">Last updated November 5, 2026</p>
+    <p class="eyebrow">Last updated November 24, 2026</p>
   </div>
 </header>
 <main>
   <div class="inner">
-    <div class="box"><p><strong>Short version:</strong> the Switch for Claude app collects nothing. It has no account, no analytics and no servers. Everything it does happens on your Mac. This website counts visits without cookies, see below.</p></div>
+    <div class="box"><p><strong>Short version:</strong> the Switch for Claude app has no account and no analytics, and your Claude logins and profiles never leave your Mac. It only confirms your license key with our server and checks for updates. When you buy it, Stripe handles the payment and we keep your email to send your key. This website counts visits without cookies, see below.</p></div>
 
     <h2>What the app reads</h2>
-    <p>To list and open your Claude profiles, Switch for Claude reads folders on your Mac. You grant it access to your home folder once, when you first open the app. It looks at:</p>
+    <p>To list and open your Claude profiles, Switch for Claude reads folders on your Mac. (The Mac App Store version asks you to grant it your home folder once.) It looks at:</p>
     <ul>
       <li>Claude Desktop data folders, such as <code>~/Library/Application Support/Claude-Work</code>, to see whether a profile exists and whether it's open.</li>
       <li>Claude Code config folders, such as <code>~/.claude-work</code>, including the account email and plan saved there, so it can show which account each profile uses.</li>
@@ -58,7 +58,7 @@ footer { border-top: 2px solid var(--ink); padding: 24px 16px; font-size: 0.92re
     <p>Your list of profiles (names, colors and folder locations) is saved inside the app's own folder on your Mac. When you create a profile, the app creates its folders in your home folder. If you choose it, it adds a <code>claude-&lt;name&gt;</code> shortcut to your <code>~/.zshrc</code> file.</p>
 
     <h2>What leaves your Mac</h2>
-    <p>Nothing. Switch for Claude makes no network connections of its own. When you open a profile, it starts Claude Desktop or Claude Code, which connect to Anthropic as they always do under Anthropic's own privacy policy.</p>
+    <p>No personal data. The only connection Switch for Claude makes on its own is the update check: about once a day it downloads the list of versions from claudeswitch.dev, which tells our server your IP address, the app version and your macOS version, like any download. Nothing is stored from it beyond ordinary server logs. You can turn the check off in the app's settings. The app also confirms your license key with our license server when it starts, when your Mac wakes and about once an hour while it runs. It sends the key and an ID for your Mac that is a one-way hash of its hardware ID, so it can't be traced back to the Mac. The server answers whether the key is still valid (for example, not refunded) and stores the hashed ID of each Mac you activate, so a key works on up to 3 Macs. This is needed to provide the app you bought (Art. 6(1)(b) GDPR). The server runs on Google Cloud in Belgium (europe-west1). When you open a profile, it starts Claude Desktop or Claude Code, which connect to Anthropic as they always do under Anthropic's own privacy policy.</p>
 
     <h2>This website</h2>
     <p>When you arrive on claudeswitch.dev, the page sends one visit to our statistics service on Google Cloud in the EU. It contains the page you landed on, the page that linked to it (without its query string), any campaign tags in the link, your browser's language and time zone, and your browser's user agent, from which we derive browser, operating system and device type. We use this to see how many people visit and how they find us.</p>
@@ -66,7 +66,9 @@ footer { border-top: 2px solid var(--ink); padding: 24px 16px; font-size: 0.92re
     <p>The legal basis is our legitimate interest in knowing how the site is used (Art. 6(1)(f) GDPR). Moving between pages and reloading a page are not counted.</p>
 
     <h2>Purchases</h2>
-    <p>You buy Switch for Claude through the Mac App Store. Apple handles the payment, and we receive no personal details about you from it.</p>
+    <p>On this website you buy Switch for Claude through Stripe (Stripe Payments Europe, Ltd., 1 Grand Canal Street Lower, Dublin 2, Ireland), which handles the payment under its own privacy policy. We never see your card details. We receive and keep your email address, your country, the amount, the time and Stripe's IDs for the payment. We use them to create your license key and send it to you, to send it again when you ask, to handle refunds, and to write to you about the app you bought, for example about an update or a problem. You can tell us at any time that you don't want those emails. We keep purchase records as long as tax and commercial law require (up to 10 years). The legal basis is the contract (Art. 6(1)(b) GDPR) and our legal obligations (Art. 6(1)(c)); emails about the app you bought rest on our legitimate interest (Art. 6(1)(f)).</p>
+    <p>The license email is sent through Resend (Resend, Inc., USA), from its EU region. Transfers to the US rest on the EU Commission's standard contractual clauses.</p>
+    <p>If you bought Switch for Claude on the Mac App Store, Apple handled the payment and gave us no personal details. We only learn your email if you write to us for a key.</p>
 
     <h2>Children</h2>
     <p>The app collects no data from anyone, including children.</p>
@@ -74,12 +76,15 @@ footer { border-top: 2px solid var(--ink); padding: 24px 16px; font-size: 0.92re
     <h2>Changes</h2>
     <p>If this policy changes, the new version will be posted on this page with a new date.</p>
 
+    <h2>Your rights</h2>
+    <p>You can ask us what we store about you, have it corrected or deleted where the law allows, restrict or object to its use, and get it in a portable form. You can also complain to a data protection authority.</p>
+
     <h2>Contact</h2>
-    <p>Questions? Write to <a href="mailto:hello@claudeswitch.dev">hello@claudeswitch.dev</a> or open an issue at <a href="https://github.com/SaschaHeyer/claude-switch/issues">github.com/SaschaHeyer/claude-switch</a>.</p>
+    <p>The controller is Sascha Heyer, Briesestr. 24A, 16321 Bernau bei Berlin, Germany. Questions? Write to <a href="mailto:hello@claudeswitch.dev">hello@claudeswitch.dev</a> or open an issue at <a href="https://github.com/SaschaHeyer/claude-switch/issues">github.com/SaschaHeyer/claude-switch</a>.</p>
   </div>
 </main>
 <footer>
-  <div class="inner">Switch for Claude is an independent tool and isn't affiliated with Anthropic.</div>
+  <div class="inner">Switch for Claude is an independent Mac utility by Sascha Heyer. It isn't affiliated with, endorsed or sponsored by Anthropic. Claude is a trademark of Anthropic PBC.<br><a href="/">Home</a> &middot; <a href="key.html">Lost your key?</a> &middot; <a href="terms.html">Terms</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="legal.html">Legal notice</a></div>
 </footer>
 <script src="visit.js" defer></script>
 </body>
