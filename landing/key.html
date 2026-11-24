@@ -37,6 +37,7 @@ ol.steps { padding-left: 1.2em; } ol.steps li { margin-bottom: 8px; }
 form.key { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
 form.key input { flex: 1 1 240px; min-width: 0; font: 500 1rem Figtree, sans-serif; padding: 13px 16px; border: 2px solid var(--ink); border-radius: 14px; background: #fff; }
 .status { margin-top: 12px; font-weight: 700; color: var(--ink); }
+.buy-error{display:none;font-weight:700}.buy-error:target{display:block}
 </style>
 </head>
 <body>
@@ -51,6 +52,7 @@ form.key input { flex: 1 1 240px; min-width: 0; font: 500 1rem Figtree, sans-ser
   <div class="inner">
     <h2>Send my key again</h2>
     <p>Enter the email you used at checkout. If it bought Switch for Claude, the key goes to that address again.</p>
+    <p class="status buy-error" id="buy-error">Checkout didn't open. Try the Buy button again in a minute, or write to <a href="mailto:hello@claudeswitch.dev">hello@claudeswitch.dev</a>.</p>
     <form class="key" id="resend">
       <input type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Email used at checkout">
       <button class="btn" type="submit">Send my key</button>
@@ -61,7 +63,7 @@ form.key input { flex: 1 1 240px; min-width: 0; font: 500 1rem Figtree, sans-ser
     <p>Then you don't pay again. The version from this website gets every update first, and you can switch to it for free:</p>
     <ol class="steps">
       <li>Find your receipt: the email from Apple, or <strong>App Store › your name › Account Settings › Purchase History</strong>.</li>
-      <li>Send a screenshot of it to <a href="mailto:hello@claudeswitch.dev?subject=App%20Store%20key">hello@claudeswitch.dev</a>.</li>
+      <li>Forward that invoice, or send a screenshot of it, to <a href="mailto:hello@claudeswitch.dev?subject=App%20Store%20key">hello@claudeswitch.dev</a>.</li>
       <li>You get a key by email, usually the same day. <a href="/download">Download the app</a>, open it and paste the key. Your profiles come over from the App Store version on their own.</li>
     </ol>
     <script>
