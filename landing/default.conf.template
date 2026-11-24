@@ -21,4 +21,6 @@ server {
     location ~ \.html$ { add_header Cache-Control 'no-cache'; }
     # Sending a lost key again goes to the license service.
     location = /api/resend-key { proxy_pass ${KEY_API}/resend-key; proxy_ssl_server_name on; }
+    # The device manager (manage.html): link by email, list the Macs, remove one.
+    location ~ ^/api/manage/(request|devices|deactivate)$ { proxy_pass ${KEY_API}/manage/$1; proxy_ssl_server_name on; }
 }

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copy your key · Switch for Claude</title>
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="app-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300;12..96,75..100,800&family=Figtree:wght@500;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root { --tangerine: #ff6b2c; --paper: #fff5ec; --ink: #17120e; --ink-soft: #5c4d41; color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 500 1.0625rem/1.65 Figtree, system-ui, -apple-system, sans-serif; }
+header { background: var(--tangerine); border-bottom: 2px solid var(--ink); padding: 18px 16px 56px; }
+.inner { max-width: 760px; margin: 0 auto; }
+.wordmark { display: inline-flex; align-items: center; gap: 10px; font: 800 1.5rem "Bricolage Grotesque", sans-serif; letter-spacing: -0.035em; text-decoration: none; color: inherit; }
+.wordmark img { width: 34px; height: 34px; }
+.wordmark span { font-weight: 300; }
+h1, h2 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin: 0; }
+h1 { font-size: clamp(2.6rem, 8vw, 4.4rem); margin-top: 48px; }
+h2 { font-size: 1.6rem; margin: 40px 0 10px; }
+.eyebrow { font: 500 0.78rem "IBM Plex Mono", monospace; letter-spacing: 0.14em; text-transform: uppercase; margin-top: 12px; }
+main { padding: 8px 16px 72px; }
+p, li { color: var(--ink-soft); }
+p { margin: 0 0 12px; }
+strong { color: var(--ink); }
+code { font: 500 0.9em "IBM Plex Mono", monospace; }
+.box { background: #fff; border: 2px solid var(--ink); border-radius: 20px; box-shadow: 0 4px 0 var(--ink); padding: 22px 24px; margin-top: 32px; }
+.box p { color: var(--ink); font-size: 1.15rem; margin: 0; }
+a { color: inherit; }
+footer { border-top: 2px solid var(--ink); padding: 24px 16px; font-size: 0.92rem; }
+.btn { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: #fff; border: 2px solid var(--ink); border-radius: 999px; padding: 14px 26px; font: 700 1.05rem Figtree, sans-serif; text-decoration: none; box-shadow: 0 4px 0 #000; cursor: pointer; }
+.btn.ghost { background: #fff; color: var(--ink); box-shadow: 0 4px 0 var(--ink); }
+ol.steps { padding-left: 1.2em; } ol.steps li { margin-bottom: 8px; }
+form.key { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+form.key input { flex: 1 1 240px; min-width: 0; font: 500 1rem Figtree, sans-serif; padding: 13px 16px; border: 2px solid var(--ink); border-radius: 14px; background: #fff; }
+.status { margin-top: 12px; font-weight: 700; color: var(--ink); }
+.buy-error{display:none;font-weight:700}.buy-error:target{display:block}
+.keytext { font: 500 0.95rem/1.55 "IBM Plex Mono", monospace; background: #ffe7d3; border-radius: 14px; padding: 16px 18px; word-break: break-all; user-select: all; -webkit-user-select: all; color: var(--ink); margin: 0 0 18px; }
+</style>
+</head>
+<body>
+<!-- Opened from the "Copy key" button in the license email. The key is in the part after #,
+     which browsers never send to a server, so it stays on this device. -->
+<header>
+  <div class="inner">
+    <a class="wordmark" href="/"><img src="app-icon.png" alt="" width="34" height="34">switch <span>for claude</span></a>
+    <h1 id="title">Copy your key</h1>
+  </div>
+</header>
+<main>
+  <div class="inner">
+    <div class="box" id="has-key" hidden>
+      <p class="keytext" id="key"></p>
+      <button class="btn" id="copy" type="button">Copy key</button>
+      <p class="status" id="status" role="status"></p>
+      <ol class="steps" style="margin-top:18px">
+        <li>Open Switch for Claude. No app yet? <a href="/download">Download it</a> and drag it to Applications.</li>
+        <li>Paste the key and click Activate.</li>
+      </ol>
+    </div>
+    <div class="box" id="no-key" hidden>
+      <p>This link has no key in it. Open the button in your license email again, or <a href="/key.html">get the key sent again</a>.</p>
+    </div>
+  </div>
+</main>
+<script>
+(function () {
+  var key = decodeURIComponent(location.hash.slice(1)).replace(/\s+/g, "");
+  if (!/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(key)) { document.getElementById("no-key").hidden = false; return; }
+  document.getElementById("has-key").hidden = false;
+  document.getElementById("key").textContent = key;
+  var status = document.getElementById("status");
+  function done() {
+    status.textContent = "Copied. Now paste it in Switch for Claude.";
+    document.getElementById("copy").textContent = "Copied ✓";
+  }
+  // Older browsers and locked-down ones: select the key and use the copy command.
+  function fallback(auto) {
+    var range = document.createRange(); range.selectNodeContents(document.getElementById("key"));
+    var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+    var ok = false; try { ok = !auto && document.execCommand("copy"); } catch (e) {}
+    if (ok) done(); else if (!auto) status.textContent = "The key is selected. Press ⌘C to copy it.";
+  }
+  function copy(auto) {
+    if (!navigator.clipboard) return fallback(auto);
+    navigator.clipboard.writeText(key).then(done, function () { fallback(auto); });
+  }
+  document.getElementById("copy").addEventListener("click", function () { copy(false); });
+  copy(true);
+})();
+</script>
+</body>
+</html>

@@ -4,13 +4,13 @@
     <title>Switch for Claude</title>
     <link>https://claudeswitch.dev/appcast.xml</link>
     <item>
-      <title>Version 1.3</title>
-      <pubDate>Tue, 24 Nov 2026 12:33:04 +0000</pubDate>
-      <sparkle:version>7</sparkle:version>
-      <sparkle:shortVersionString>1.3</sparkle:shortVersionString>
+      <title>Version 1.4</title>
+      <pubDate>Tue, 24 Nov 2026 12:54:07 +0000</pubDate>
+      <sparkle:version>8</sparkle:version>
+      <sparkle:shortVersionString>1.4</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <description><![CDATA[<p>Updates now arrive on their own: Switch for Claude checks at every launch and installs with one click.</p>]]></description>
-      <enclosure url="https://claudeswitch.dev/SwitchForClaude-1.3.dmg" sparkle:edSignature="t54wZ9wJFz78LMK3P0K3WeOPo6hWJXgG3CyNV1J/kCSY3Pz6en9+hLB13EqBTqQzp6+moksUItLiAezdgTLwDw==" length="2979502" type="application/octet-stream"/>
+      <description><![CDATA[<p>Paste your key straight from the email, manage your Macs online at claudeswitch.dev/manage, and a nicer install window.</p>]]></description>
+      <enclosure url="https://claudeswitch.dev/SwitchForClaude-1.4.dmg" sparkle:edSignature="G60c96o/45FN85OB6fnjFgltUl35ACj6kizBkkzjFfT/8nNdeQcHy0ddjS3yb/u8wZ9g7iW4nkcI+9rl7WlXCg==" length="2834587" type="application/octet-stream"/>
     </item>
   </channel>
 </rss>
