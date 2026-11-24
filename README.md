@@ -25,6 +25,8 @@ A native Mac app for **Claude Desktop and Claude Code**. Every account opens in 
 
 ---
 
+> **Using OpenAI Codex too?** The same idea for Codex: [codex-switch](https://github.com/SaschaHeyer/codex-switch) (free CLI) and [Switch for Codex](https://codexswitch.dev) (Mac app).
+
 ## The Problem
 
 Claude Code stores one login per machine. If you have a **work account** (Team/Enterprise) and a **personal account** (Pro/Max), you have to `/logout` and `/login` every time you switch. That gets old fast.
