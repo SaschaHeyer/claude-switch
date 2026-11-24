@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your license key · Switch for Claude</title>
+<meta name="description" content="Get your Switch for Claude license key again, or a free key for an App Store purchase.">
+<link rel="icon" href="app-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300;12..96,75..100,800&family=Figtree:wght@500;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root { --tangerine: #ff6b2c; --paper: #fff5ec; --ink: #17120e; --ink-soft: #5c4d41; color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 500 1.0625rem/1.65 Figtree, system-ui, -apple-system, sans-serif; }
+header { background: var(--tangerine); border-bottom: 2px solid var(--ink); padding: 18px 16px 56px; }
+.inner { max-width: 760px; margin: 0 auto; }
+.wordmark { display: inline-flex; align-items: center; gap: 10px; font: 800 1.5rem "Bricolage Grotesque", sans-serif; letter-spacing: -0.035em; text-decoration: none; color: inherit; }
+.wordmark img { width: 34px; height: 34px; }
+.wordmark span { font-weight: 300; }
+h1, h2 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin: 0; }
+h1 { font-size: clamp(2.6rem, 8vw, 4.4rem); margin-top: 48px; }
+h2 { font-size: 1.6rem; margin: 40px 0 10px; }
+.eyebrow { font: 500 0.78rem "IBM Plex Mono", monospace; letter-spacing: 0.14em; text-transform: uppercase; margin-top: 12px; }
+main { padding: 8px 16px 72px; }
+p, li { color: var(--ink-soft); }
+p { margin: 0 0 12px; }
+strong { color: var(--ink); }
+code { font: 500 0.9em "IBM Plex Mono", monospace; }
+.box { background: #fff; border: 2px solid var(--ink); border-radius: 20px; box-shadow: 0 4px 0 var(--ink); padding: 22px 24px; margin-top: 32px; }
+.box p { color: var(--ink); font-size: 1.15rem; margin: 0; }
+a { color: inherit; }
+footer { border-top: 2px solid var(--ink); padding: 24px 16px; font-size: 0.92rem; }
+.btn { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: #fff; border: 2px solid var(--ink); border-radius: 999px; padding: 14px 26px; font: 700 1.05rem Figtree, sans-serif; text-decoration: none; box-shadow: 0 4px 0 #000; cursor: pointer; }
+.btn.ghost { background: #fff; color: var(--ink); box-shadow: 0 4px 0 var(--ink); }
+ol.steps { padding-left: 1.2em; } ol.steps li { margin-bottom: 8px; }
+form.key { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+form.key input { flex: 1 1 240px; min-width: 0; font: 500 1rem Figtree, sans-serif; padding: 13px 16px; border: 2px solid var(--ink); border-radius: 14px; background: #fff; }
+.status { margin-top: 12px; font-weight: 700; color: var(--ink); }
+</style>
+</head>
+<body>
+<header>
+  <div class="inner">
+    <a class="wordmark" href="/"><img src="app-icon.png" alt="" width="34" height="34">switch <span>for claude</span></a>
+    <h1>Your license key</h1>
+    <p class="eyebrow">Lost it, or bought on the App Store</p>
+  </div>
+</header>
+<main>
+  <div class="inner">
+    <h2>Send my key again</h2>
+    <p>Enter the email you used at checkout. If it bought Switch for Claude, the key goes to that address again.</p>
+    <form class="key" id="resend">
+      <input type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Email used at checkout">
+      <button class="btn" type="submit">Send my key</button>
+    </form>
+    <p class="status" id="resend-status" role="status"></p>
+
+    <h2 id="app-store">Bought it on the Mac App Store?</h2>
+    <p>Then you don't pay again. The version from this website gets every update first, and you can switch to it for free:</p>
+    <ol class="steps">
+      <li>Find your receipt: the email from Apple, or <strong>App Store › your name › Account Settings › Purchase History</strong>.</li>
+      <li>Send a screenshot of it to <a href="mailto:hello@claudeswitch.dev?subject=App%20Store%20key">hello@claudeswitch.dev</a>.</li>
+      <li>You get a key by email, usually the same day. <a href="/download">Download the app</a>, open it and paste the key. Your profiles come over from the App Store version on their own.</li>
+    </ol>
+    <script>
+      document.getElementById('resend').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var status = document.getElementById('resend-status');
+        status.textContent = 'Sending…';
+        fetch('/api/resend-key', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: this.email.value }) })
+          .then(function () { status.textContent = 'If that email bought Switch for Claude, the key is on its way.'; })
+          .catch(function () { status.textContent = 'That didn\'t work. Write to hello@claudeswitch.dev and we send it by hand.'; });
+      });
+    </script>
+  </div>
+</main>
+<footer>
+  <div class="inner">Switch for Claude is an independent Mac utility by Sascha Heyer. It isn't affiliated with, endorsed or sponsored by Anthropic. Claude is a trademark of Anthropic PBC.<br><a href="/">Home</a> &middot; <a href="key.html">Lost your key?</a> &middot; <a href="terms.html">Terms</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="legal.html">Legal notice</a></div>
+</footer>
+<script src="visit.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+# nginx fills in ${BUY_URL} and ${KEY_API} from the Cloud Run environment at start.
+server {
+    listen 8080;
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # The Stripe Checkout link. One place to change it, and the buttons keep a clean /buy.
+    location = /buy { return 302 ${BUY_URL}; }
+    # The newest notarized build.
+    location = /download { return 302 /SwitchForClaude.dmg; }
+    location = /SwitchForClaude.dmg {
+        types { application/x-apple-diskimage dmg; }
+        add_header Content-Disposition 'attachment; filename="SwitchForClaude.dmg"';
+    }
+    # Sending a lost key again goes to the license service.
+    location = /api/resend-key { proxy_pass ${KEY_API}/resend-key; proxy_ssl_server_name on; }
+}
