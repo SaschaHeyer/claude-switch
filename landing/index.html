@@ -101,6 +101,18 @@ code, .mono { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; }
 .trust { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 0.95rem; }
 .trust span::before { content: "✓"; font-weight: 800; margin-right: 6px; }
 
+.videoband { padding-block: clamp(56px, 9vw, 110px); }
+.video-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 12px 24px; margin-bottom: clamp(20px, 3vw, 32px); }
+.video-head h2 { margin: 0; }
+.video-frame { position: relative; aspect-ratio: 16 / 9; border: 2px solid var(--ink); border-radius: 18px; overflow: hidden;
+  background: var(--ink); box-shadow: 0 8px 0 var(--ink); }
+.video-frame img, .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; }
+.video-play { position: absolute; inset: 0; display: grid; place-items: center; background: none; border: 0; cursor: pointer; padding: 0; }
+.video-play span { display: grid; place-items: center; width: clamp(72px, 10vw, 112px); aspect-ratio: 1; border-radius: 50%;
+  background: var(--tangerine); border: 2px solid var(--ink); box-shadow: 0 6px 0 var(--ink); transition: transform .15s; }
+.video-play:hover span, .video-play:focus-visible span { transform: scale(1.06); }
+.video-play svg { width: 38%; margin-left: 8%; }
+.video-note { font-size: 0.85rem; margin-top: 12px; color: var(--ink-soft); }
 .shot-wrap { position: relative; margin-top: clamp(28px, 6vw, 64px); }
 .shot {
   border: 2px solid var(--ink); border-radius: 18px; overflow: hidden; background: var(--paper);
@@ -232,6 +244,12 @@ footer .inner { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content:
   .sticker.s3 { right: -6px; }
 }
 </style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"VideoObject","name":"Every Claude account open at once on your Mac, with live usage limits",
+ "description":"Switch for Claude 1.5 in 50 seconds: every Claude account in its own window, Claude Code on the same account, live 5-hour and weekly usage, which account has room, plan fit and Clean up.",
+ "thumbnailUrl":"https://claudeswitch.dev/video-poster.jpg","uploadDate":"2026-11-25","duration":"PT50S",
+ "embedUrl":"https://www.youtube-nocookie.com/embed/2rhYhxt1MEA","contentUrl":"https://www.youtube.com/watch?v=2rhYhxt1MEA"}
+</script>
 </head>
 <body>
 
@@ -284,6 +302,22 @@ footer .inner { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content:
       <span>Work</span><span>Personal</span><span>Client</span><span>Side project</span><span>Team</span><span>Max plan</span><span>Work</span><span>Personal</span><span>Client</span><span>Side project</span><span>Team</span><span>Max plan</span>
     </div>
   </div>
+
+  <section class="band paper videoband" id="video">
+    <div class="inner">
+      <div class="video-head">
+        <div>
+          <p class="eyebrow">See it in 50 seconds</p>
+          <h2>Every account. <em>One click.</em></h2>
+        </div>
+      </div>
+      <div class="video-frame" data-video="2rhYhxt1MEA">
+        <img src="video-poster.jpg" width="1280" height="720" loading="lazy" alt="Video: Switch for Claude 1.5 in 50 seconds. Every Claude account open at once, with live usage.">
+        <button class="video-play" type="button" aria-label="Play the video"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5v17l15-8.5z" fill="currentColor"/></svg></span></button>
+      </div>
+      <p class="video-note">Plays from YouTube. Nothing loads from YouTube until you press play.</p>
+    </div>
+  </section>
 
   <section class="band paper block" id="how">
     <div class="inner">
@@ -516,6 +550,16 @@ footer .inner { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content:
     navigator.clipboard.writeText(document.getElementById('install').textContent.trim());
     this.textContent = 'Copied';
     setTimeout(() => { this.textContent = 'Copy'; }, 1800);
+  });
+  document.querySelectorAll('.video-frame').forEach(function (f) {
+    f.querySelector('.video-play').addEventListener('click', function () {
+      var i = document.createElement('iframe');
+      i.src = 'https://www.youtube-nocookie.com/embed/' + f.dataset.video + '?autoplay=1&rel=0&playsinline=1';
+      i.title = 'Switch for Claude in 50 seconds';
+      i.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      i.allowFullscreen = true;
+      f.replaceChildren(i);
+    });
   });
   fetch('https://api.github.com/repos/SaschaHeyer/claude-switch')
     .then(r => r.ok ? r.json() : null)
