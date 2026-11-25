@@ -4,13 +4,13 @@
     <title>Switch for Claude</title>
     <link>https://claudeswitch.dev/appcast.xml</link>
     <item>
-      <title>Version 1.4</title>
-      <pubDate>Tue, 24 Nov 2026 12:54:07 +0000</pubDate>
-      <sparkle:version>8</sparkle:version>
-      <sparkle:shortVersionString>1.4</sparkle:shortVersionString>
+      <title>Version 1.5</title>
+      <pubDate>Wed, 25 Nov 2026 20:04:31 +0000</pubDate>
+      <sparkle:version>9</sparkle:version>
+      <sparkle:shortVersionString>1.5</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <description><![CDATA[<p>Paste your key straight from the email, manage your Macs online at claudeswitch.dev/manage, and a nicer install window.</p>]]></description>
-      <enclosure url="https://claudeswitch.dev/SwitchForClaude-1.4.dmg" sparkle:edSignature="G60c96o/45FN85OB6fnjFgltUl35ACj6kizBkkzjFfT/8nNdeQcHy0ddjS3yb/u8wZ9g7iW4nkcI+9rl7WlXCg==" length="2834587" type="application/octet-stream"/>
+      <description><![CDATA[<p>Live usage for every account: 5-hour and weekly limits with reset times, which account has room, and a usage details page with weekly history and plan fit.</p>]]></description>
+      <enclosure url="https://claudeswitch.dev/SwitchForClaude-1.5.dmg" sparkle:edSignature="QYuYYSVC8+j9zuXPC/D+df2e0NY13e8dn+CFJ1umQrLGU4AfHy5ZiJx2L3VBnOVGc1YgRv7WN70D2h3gBdhWDw==" length="3176602" type="application/octet-stream"/>
     </item>
   </channel>
 </rss>

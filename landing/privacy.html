@@ -38,12 +38,12 @@ footer { border-top: 2px solid var(--ink); padding: 24px 16px; font-size: 0.92re
   <div class="inner">
     <a class="wordmark" href="/"><img src="app-icon.png" alt="" width="34" height="34">switch <span>for claude</span></a>
     <h1>Privacy Policy</h1>
-    <p class="eyebrow">Last updated November 24, 2026</p>
+    <p class="eyebrow">Last updated November 25, 2026</p>
   </div>
 </header>
 <main>
   <div class="inner">
-    <div class="box"><p><strong>Short version:</strong> the Switch for Claude app has no account and no analytics, and your Claude logins and profiles never leave your Mac. It only confirms your license key with our server and checks for updates. When you buy it, Stripe handles the payment and we keep your email to send your key. This website counts visits without cookies, see below.</p></div>
+    <div class="box"><p><strong>Short version:</strong> the Switch for Claude app has no account and no analytics, and your Claude logins and profiles never leave your Mac. It only confirms your license key with our server, checks for updates, and asks Anthropic how much of each account's plan you have used. When you buy it, Stripe handles the payment and we keep your email to send your key. This website counts visits without cookies, see below.</p></div>
 
     <h2>What the app reads</h2>
     <p>To list and open your Claude profiles, Switch for Claude reads folders on your Mac. (The Mac App Store version asks you to grant it your home folder once.) It looks at:</p>
@@ -52,13 +52,13 @@ footer { border-top: 2px solid var(--ink); padding: 24px 16px; font-size: 0.92re
       <li>Claude Code config folders, such as <code>~/.claude-work</code>, including the account email and plan saved there, so it can show which account each profile uses.</li>
       <li>Profile lists made by other tools, such as Multi-Claude, so you can bring those profiles over.</li>
     </ul>
-    <p>The app never reads your sign-in tokens or passwords. Those stay in your macOS Keychain, managed by Claude itself.</p>
+    <p>The app never sees your passwords. To show each account's plan usage, it reads the login Claude Desktop keeps for that profile (encrypted with the "Claude Safe Storage" key in your macOS Keychain, which macOS asks you to allow once). It uses that login only to ask Anthropic for the account's usage limits, and never stores it, renews it or sends it anywhere else. If you don't allow it, the app shows the last usage reading Claude Desktop saved instead.</p>
 
     <h2>What the app stores</h2>
     <p>Your list of profiles (names, colors and folder locations) is saved inside the app's own folder on your Mac. When you create a profile, the app creates its folders in your home folder. If you choose it, it adds a <code>claude-&lt;name&gt;</code> shortcut to your <code>~/.zshrc</code> file.</p>
 
     <h2>What leaves your Mac</h2>
-    <p>No personal data. The only connection Switch for Claude makes on its own is the update check: about once a day it downloads the list of versions from claudeswitch.dev, which tells our server your IP address, the app version and your macOS version, like any download. Nothing is stored from it beyond ordinary server logs. You can turn the check off in the app's settings. The app also confirms your license key with our license server when it starts, when your Mac wakes and about once an hour while it runs. It sends the key and an ID for your Mac that is a one-way hash of its hardware ID, so it can't be traced back to the Mac. The server answers whether the key is still valid (for example, not refunded) and stores the hashed ID and the name of each Mac you activate (the name you gave it in System Settings, so you can tell your Macs apart when you remove one), so a key works on up to 2 Macs. This is needed to provide the app you bought (Art. 6(1)(b) GDPR). The server runs on Google Cloud in Belgium (europe-west1). When you open a profile, it starts Claude Desktop or Claude Code, which connect to Anthropic as they always do under Anthropic's own privacy policy.</p>
+    <p>No personal data. The only connection Switch for Claude makes on its own is the update check: about once a day it downloads the list of versions from claudeswitch.dev, which tells our server your IP address, the app version and your macOS version, like any download. Nothing is stored from it beyond ordinary server logs. You can turn the check off in the app's settings. The app also confirms your license key with our license server when it starts, when your Mac wakes and about once an hour while it runs. It sends the key and an ID for your Mac that is a one-way hash of its hardware ID, so it can't be traced back to the Mac. The server answers whether the key is still valid (for example, not refunded) and stores the hashed ID and the name of each Mac you activate (the name you gave it in System Settings, so you can tell your Macs apart when you remove one), so a key works on up to 2 Macs. This is needed to provide the app you bought (Art. 6(1)(b) GDPR). The server runs on Google Cloud in Belgium (europe-west1). To show plan usage, about every three minutes the app asks Anthropic (api.anthropic.com) for each signed-in account's usage, with that account's own login, the same request Claude makes; the answer (percentages and reset times) is kept on your Mac only, in the app's own folder, for up to 90 days, so it can show your weekly history. Anthropic handles that request under its own privacy policy. When you open a profile, it starts Claude Desktop or Claude Code, which connect to Anthropic as they always do under Anthropic's own privacy policy.</p>
 
     <h2>This website</h2>
     <p>When you arrive on claudeswitch.dev, the page sends one visit to our statistics service on Google Cloud in the EU. It contains the page you landed on, the page that linked to it (without its query string), any campaign tags in the link, your browser's language and time zone, and your browser's user agent, from which we derive browser, operating system and device type. We use this to see how many people visit and how they find us.</p>

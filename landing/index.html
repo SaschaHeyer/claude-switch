@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Claude Switch: every Claude account on one Mac</title>
-<meta name="description" content="Run your work, personal and client Claude accounts side by side on one Mac. Claude Desktop and Claude Code, each with its own login. $9.99 once, no subscription.">
+<meta name="description" content="Run your work, personal and client Claude accounts side by side on one Mac. Claude Desktop and Claude Code, each with its own login, live usage limits for every account. $9.99 once, no subscription.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Claude Switch: every Claude account on one Mac">
 <meta property="og:description" content="Claude Desktop and Claude Code, one login per account, all open at once. $9.99 once.">
@@ -167,6 +167,12 @@ section.block { padding-block: clamp(64px, 10vw, 120px); }
 .cleanup-grid .ticks li::before { background-color: var(--ink); border-color: var(--paper); }
 .cleanup-grid .note { font-size: 0.95rem; opacity: 0.85; max-width: 52ch; }
 .cleanup-grid .shot { margin-bottom: 0; transform: rotate(1.2deg); animation: none; }
+.sunband { background: var(--sun); color: var(--ink); }
+.usage-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+.usage-grid h2 { font-size: clamp(2.6rem, 6vw, 5rem); }
+.usage-grid .ticks { margin-top: 6px; }
+.usage-grid .note { font-size: 0.95rem; opacity: 0.85; max-width: 52ch; }
+.usage-grid .shot { margin-bottom: 0; transform: rotate(-1.2deg); animation: none; }
 .flow { display: flex; flex-direction: column; gap: 12px; }
 .flow-row {
   display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 18px;
@@ -213,7 +219,8 @@ footer { padding-block: 28px; border-top: 2px solid var(--ink); font-size: 0.92r
 footer .inner { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; }
 
 @media (max-width: 900px) {
-  .cards, .steps, .price-grid, .switch-grid, .cleanup-grid { grid-template-columns: minmax(0, 1fr); }
+  .cards, .steps, .price-grid, .switch-grid, .cleanup-grid, .usage-grid { grid-template-columns: minmax(0, 1fr); }
+  .usage-grid .shot { order: 2; }
   .card.tall { grid-row: auto; }
   .navlinks a:not(.btn):not(.stars) { display: none; }
   .shot { margin-bottom: -40px; }
@@ -331,7 +338,7 @@ footer .inner { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content:
   <section class="band leafband block" id="cleanup">
     <div class="inner cleanup-grid">
       <div class="section-head" style="margin:0">
-        <p class="eyebrow">New</p>
+        <p class="eyebrow">Clean up</p>
         <h2>Clean up what Claude <em>left behind.</em></h2>
         <p>Every Claude session in a worktree is a full copy of your repository, and closed sessions leave dev servers running. See it all, per account, and clear it in a click.</p>
         <ul class="ticks">
@@ -344,6 +351,26 @@ footer .inner { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content:
       </div>
       <div class="shot">
         <img src="cleanup.png" width="1600" height="1047" loading="lazy" alt="Clean up in Switch for Claude: worktrees with their size and whether they are safe to remove, and a button that moves the safe ones to the Trash.">
+      </div>
+    </div>
+  </section>
+
+  <section class="band sunband block" id="usage">
+    <div class="inner usage-grid">
+      <div class="shot">
+        <img src="usage.png" width="1600" height="1163" loading="lazy" alt="Usage details in Switch for Claude: the 5-hour and weekly limits with reset times, which account has the most room, and a plan fit card saying Max 5x would be enough, saving $100 a month.">
+      </div>
+      <div class="section-head" style="margin:0">
+        <p class="eyebrow">New in 1.5</p>
+        <h2>Know which account <em>has room.</em></h2>
+        <p>Every profile shows its live 5-hour and weekly limits, with reset times. When one account runs low, you see which one has room and open it in a click.</p>
+        <ul class="ticks">
+          <li>Live usage for every account, in the app and the menu bar</li>
+          <li>Which account has the most room right now</li>
+          <li>Weekly peaks, limits hit and when you use Claude most</li>
+          <li>Plan fit: when a smaller plan would do, and what it saves</li>
+        </ul>
+        <p class="note">The numbers come straight from Anthropic with each profile's own Claude Desktop login, the same ones Claude shows you. Nothing goes to us.</p>
       </div>
     </div>
   </section>
@@ -432,7 +459,11 @@ footer .inner { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content:
         </details>
         <details>
           <summary>Does anything leave my Mac?</summary>
-          <p>Your Claude logins and profiles never do; logins stay in your macOS Keychain. There's no account and no analytics. The app makes two small calls: it confirms your license key with our server (the key and an anonymous ID for your Mac, nothing else), and once a day it asks claudeswitch.dev whether there's an update.</p>
+          <p>Your Claude logins and profiles never do; logins stay in your macOS Keychain. There's no account and no analytics. The app makes three small calls: it confirms your license key with our server (the key and an anonymous ID for your Mac, nothing else), once a day it asks claudeswitch.dev whether there's an update, and every few minutes it asks Anthropic for each account's usage, the same request Claude itself makes.</p>
+        </details>
+        <details>
+          <summary>Why does macOS ask to let Switch for Claude use "Claude Safe Storage"?</summary>
+          <p>That's for the usage numbers. Claude Desktop keeps each profile's login encrypted with a key in your Keychain called Claude Safe Storage. Switch for Claude needs it to read that login and ask Anthropic for your limits. Click Always Allow once and it covers every profile. If you click Deny, everything else works and usage shows the last reading Claude Desktop saved.</p>
         </details>
         <details>
           <summary>How do I get it after paying?</summary>
