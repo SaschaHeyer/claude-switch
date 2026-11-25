@@ -21,7 +21,9 @@ One machine. Multiple logins. Zero friction.
 
 A native Mac app for **Claude Desktop and Claude Code**. Every account opens in its own window with its own login, all at the same time, one click away in the menu bar. Already on Multi-Claude? Your profiles come over in one click, straight from their existing folders.
 
-**$4.99 once on the Mac App Store, no subscription.** Get it on the [Mac App Store](https://apps.apple.com/app/id6827070714) or see [claudeswitch.dev](https://claudeswitch.dev). The CLI below stays free and open source, and both use the same profiles.
+New in 1.5: live 5-hour and weekly usage for every account, which account has room right now, and Clean up for the worktrees and caches Claude leaves behind. [Watch it in 50 seconds](https://youtu.be/2rhYhxt1MEA).
+
+**$9.99 once, no subscription, at [claudeswitch.dev](https://claudeswitch.dev).** The CLI below stays free and open source, and both use the same profiles.
 
 ---
 
