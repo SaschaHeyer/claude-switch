@@ -4,13 +4,13 @@
     <title>Switch for Claude</title>
     <link>https://claudeswitch.dev/appcast.xml</link>
     <item>
-      <title>Version 1.5</title>
-      <pubDate>Wed, 25 Nov 2026 20:04:31 +0000</pubDate>
-      <sparkle:version>9</sparkle:version>
-      <sparkle:shortVersionString>1.5</sparkle:shortVersionString>
+      <title>Version 1.6</title>
+      <pubDate>Thu, 26 Nov 2026 13:22:45 +0000</pubDate>
+      <sparkle:version>10</sparkle:version>
+      <sparkle:shortVersionString>1.6</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <description><![CDATA[<p>Live usage for every account: 5-hour and weekly limits with reset times, which account has room, and a usage details page with weekly history and plan fit.</p>]]></description>
-      <enclosure url="https://claudeswitch.dev/SwitchForClaude-1.5.dmg" sparkle:edSignature="QYuYYSVC8+j9zuXPC/D+df2e0NY13e8dn+CFJ1umQrLGU4AfHy5ZiJx2L3VBnOVGc1YgRv7WN70D2h3gBdhWDw==" length="3176602" type="application/octet-stream"/>
+      <description><![CDATA[<p>Floating bar has its own on/off switch in the sidebar, a one-time card to star the project on GitHub, and the weekly chart shows where the Pro and Max 5x limits sit.</p>]]></description>
+      <enclosure url="https://claudeswitch.dev/SwitchForClaude-1.6.dmg" sparkle:edSignature="PtvYmKxLjZIQcDBUpNzSABfCAlGcygTepbeHx2/skDk4U0AdpWl+aPjri5bf+nBMTdCQLB/aJvKKgGrnSX4OBA==" length="3215515" type="application/octet-stream"/>
     </item>
   </channel>
 </rss>
