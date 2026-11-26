@@ -70,13 +70,23 @@ install() {
     if ! echo "$PATH" | tr ':' '\n' | grep -q "^${INSTALL_DIR}$"; then
         warn "${INSTALL_DIR} is not in your PATH."
         echo ""
-        info "Add it to your shell config:"
-        local shell_config="$HOME/.zshrc"
-        if [ -n "${BASH_VERSION:-}" ]; then
-            shell_config="$HOME/.bashrc"
-        fi
-        printf "    ${DIM}echo 'export PATH=\"%s:\$PATH\"' >> %s${RESET}\n" "$INSTALL_DIR" "$shell_config"
-        printf "    ${DIM}source %s${RESET}\n" "$shell_config"
+        # Use the login shell: this script usually runs via `curl | bash`,
+        # so BASH_VERSION is always set and says nothing about the user's shell.
+        case "$(basename "${SHELL:-}")" in
+            fish)
+                info "Add it to your fish PATH (persists across sessions):"
+                printf "    ${DIM}fish_add_path %s${RESET}\n" "$INSTALL_DIR"
+                ;;
+            *)
+                local shell_config="$HOME/.zshrc"
+                if [ "$(basename "${SHELL:-}")" = "bash" ]; then
+                    shell_config="$HOME/.bashrc"
+                fi
+                info "Add it to your shell config:"
+                printf "    ${DIM}echo 'export PATH=\"%s:\$PATH\"' >> %s${RESET}\n" "$INSTALL_DIR" "$shell_config"
+                printf "    ${DIM}source %s${RESET}\n" "$shell_config"
+                ;;
+        esac
         echo ""
     fi
 
@@ -108,8 +118,9 @@ uninstall() {
     fi
 
     echo ""
-    info "Profile directories (~/.claude-*) were not removed."
-    info "Remove them manually if needed."
+    info "Profile directories (~/.claude-*) and shell shortcuts were not removed."
+    info "Run 'claude-switch delete <name>' first, or remove them manually:"
+    printf "    ${DIM}~/.claude-*  ·  aliases in ~/.zshrc  ·  ~/.config/fish/functions/claude-*.fish${RESET}\n"
     echo ""
 }
 
