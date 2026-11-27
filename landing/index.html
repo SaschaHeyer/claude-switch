@@ -180,6 +180,8 @@ section.block { padding-block: clamp(64px, 10vw, 120px); }
 .cleanup-grid .note { font-size: 0.95rem; opacity: 0.85; max-width: 52ch; }
 .cleanup-grid .shot { margin-bottom: 0; transform: rotate(1.2deg); animation: none; }
 .sunband { background: var(--sun); color: var(--ink); }
+.freed-live { font-size: 1.15rem; margin: 14px 0 6px; }
+.freed-live strong { font: 800 1.6rem "Bricolage Grotesque", sans-serif; letter-spacing: -0.03em; }
 .usage-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
 .usage-grid h2 { font-size: clamp(2.6rem, 6vw, 5rem); }
 .usage-grid .ticks { margin-top: 6px; }
@@ -382,6 +384,7 @@ footer .inner { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content:
           <li>Old Claude Desktop sessions, oldest first, archived or deleted in bulk</li>
           <li>Dev servers and browsers left running, ended in one click</li>
         </ul>
+        <p class="freed-live" id="freed-live" hidden><strong id="freed-gb"></strong> GB freed by Switch for Claude users so far.</p>
         <p class="note">Everything goes to the Trash. A worktree only counts as safe when it has no changes, every commit is also on another branch or the remote, and nothing is running in it.</p>
       </div>
       <div class="shot">
@@ -565,6 +568,14 @@ footer .inner { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content:
     .then(r => r.ok ? r.json() : null)
     .then(d => { if (d && d.stargazers_count) document.getElementById('stars').textContent = d.stargazers_count; })
     .catch(() => {});
+</script>
+<script>
+// The live total from the app's anonymous usage counts. Shown once it is worth showing; hidden if the call fails.
+fetch("https://claude-switch-telemetry-507906352164.europe-west1.run.app/freed").then(r => r.ok ? r.json() : null).then(d => {
+  if (!d || !(d.disk_freed_gb >= 10)) return;
+  document.getElementById("freed-gb").textContent = d.disk_freed_gb.toLocaleString("en-US", {maximumFractionDigits: d.disk_freed_gb >= 100 ? 0 : 1});
+  document.getElementById("freed-live").hidden = false;
+}).catch(() => {});
 </script>
 <script src="visit.js" defer></script>
 </body>
