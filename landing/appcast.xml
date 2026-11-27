@@ -4,13 +4,13 @@
     <title>Switch for Claude</title>
     <link>https://claudeswitch.dev/appcast.xml</link>
     <item>
-      <title>Version 1.6</title>
-      <pubDate>Thu, 26 Nov 2026 13:22:45 +0000</pubDate>
-      <sparkle:version>10</sparkle:version>
-      <sparkle:shortVersionString>1.6</sparkle:shortVersionString>
+      <title>Version 1.7</title>
+      <pubDate>Fri, 27 Nov 2026 20:48:57 +0000</pubDate>
+      <sparkle:version>11</sparkle:version>
+      <sparkle:shortVersionString>1.7</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <description><![CDATA[<p>Floating bar has its own on/off switch in the sidebar, a one-time card to star the project on GitHub, and the weekly chart shows where the Pro and Max 5x limits sit.</p>]]></description>
-      <enclosure url="https://claudeswitch.dev/SwitchForClaude-1.6.dmg" sparkle:edSignature="PtvYmKxLjZIQcDBUpNzSABfCAlGcygTepbeHx2/skDk4U0AdpWl+aPjri5bf+nBMTdCQLB/aJvKKgGrnSX4OBA==" length="3215515" type="application/octet-stream"/>
+      <description><![CDATA[<p>Claude Code opens in your own shell (fish works now), fish shortcuts, anonymous usage counts you can turn off in Settings.</p>]]></description>
+      <enclosure url="https://claudeswitch.dev/SwitchForClaude-1.7.dmg" sparkle:edSignature="8jnpalXukdO0vh4Rd2zNc6JZ6X8KlSUlGsDIbv8pVGUGxgxathYtkdkKYj3e7QyQXXEh1jPJVW73fAEdw4XWDA==" length="3248794" type="application/octet-stream"/>
     </item>
   </channel>
 </rss>
