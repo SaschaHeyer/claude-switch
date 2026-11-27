@@ -494,7 +494,7 @@ footer .inner { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content:
         </details>
         <details>
           <summary>Does anything leave my Mac?</summary>
-          <p>Your Claude logins and profiles never do; logins stay in your macOS Keychain. There's no account and no analytics. The app makes three small calls: it confirms your license key with our server (the key and an anonymous ID for your Mac, nothing else), once a day it asks claudeswitch.dev whether there's an update, and every few minutes it asks Anthropic for each account's usage, the same request Claude itself makes.</p>
+          <p>Your Claude logins and profiles never do; logins stay in your macOS Keychain. There's no account. The app makes four small calls: it confirms your license key with our server (the key and an anonymous ID for your Mac, nothing else), once a day it asks claudeswitch.dev whether there's an update, every few minutes it asks Anthropic for each account's usage, the same request Claude itself makes, and once a day it sends anonymous usage counts, like how many profiles you have and how often you use the floating bar. You can turn those off in Settings; <a href="privacy.html#usage-statistics">here's exactly what they contain</a>.</p>
         </details>
         <details>
           <summary>Why does macOS ask to let Switch for Claude use "Claude Safe Storage"?</summary>
