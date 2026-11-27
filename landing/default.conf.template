@@ -17,7 +17,7 @@ server {
     # Sparkle reads this once a day from every installed copy.
     location = /appcast.xml { add_header Cache-Control 'no-cache'; }
     # Pages are always checked with the server, so a change is seen at the next visit.
-    location / { try_files $uri $uri/ =404; add_header Cache-Control 'no-cache'; }
+    location / { try_files $uri $uri.html $uri/ =404; add_header Cache-Control 'no-cache'; }
     location ~ \.html$ { add_header Cache-Control 'no-cache'; }
     # Sending a lost key again goes to the license service.
     location = /api/resend-key { proxy_pass ${KEY_API}/resend-key; proxy_ssl_server_name on; }

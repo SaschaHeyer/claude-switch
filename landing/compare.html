@@ -119,7 +119,7 @@ footer .inner { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content:
 
 <main>
   <div class="inner">
-    <div class="box"><p><strong>Short version:</strong> one account now and then, use <code>/logout</code> and <code>/login</code>. Terminal only and happy in a shell config, use a <code>CLAUDE_CONFIG_DIR</code> alias. You want usage numbers and automatic switching near rate limits, use claude-swap. You want Claude Desktop and Claude Code accounts open side by side with one click on a Mac, use Claude Switch.</p></div>
+    <div class="box"><p><strong>Short version:</strong> one account now and then, use <code>/logout</code> and <code>/login</code>. Terminal only and happy in a shell config, use a <code>CLAUDE_CONFIG_DIR</code> alias. You want automatic switching near rate limits, use claude-swap. You want Claude Desktop and Claude Code accounts open side by side with one click and live usage on a Mac, use Claude Switch.</p></div>
 
     <h2>Side by side</h2>
     <div class="table-wrap">
@@ -139,7 +139,7 @@ footer .inner { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content:
           <tr><th scope="row">Several accounts open at once</th><td class="yes">Yes</td><td class="yes">Yes, one per terminal</td><td class="yes">Yes, with <code>cswap run</code></td><td class="no">No</td></tr>
           <tr><th scope="row">Sign in again to switch</th><td>No, once per profile</td><td>No, once per folder</td><td>No, once per account</td><td>Yes, in the browser, every time</td></tr>
           <tr><th scope="row">Shows which account you get</th><td class="yes">Email and plan per profile</td><td class="no">No</td><td class="yes">Yes, in <code>cswap list</code></td><td class="no">No</td></tr>
-          <tr><th scope="row">Usage across accounts</th><td class="no">No</td><td class="no">No</td><td class="yes">Yes, 5-hour and 7-day</td><td class="no">No</td></tr>
+          <tr><th scope="row">Usage across accounts</th><td class="yes">Yes, live 5-hour and weekly</td><td class="no">No</td><td class="yes">Yes, 5-hour and 7-day</td><td class="no">No</td></tr>
           <tr><th scope="row">Switches before a rate limit</th><td class="no">No</td><td class="no">No</td><td class="yes">Yes, <code>cswap auto</code></td><td class="no">No</td></tr>
           <tr><th scope="row">Skills, settings, CLAUDE.md</th><td>Shared across profiles</td><td>Separate unless you symlink them</td><td>Shared by default</td><td>One setup</td></tr>
           <tr><th scope="row">Runs on</th><td>macOS</td><td>Any shell</td><td>macOS, Linux, Windows</td><td>Wherever Claude Code runs</td></tr>
@@ -190,8 +190,8 @@ alias claude-personal='CLAUDE_CONFIG_DIR=~/.claude-personal claude'</code></pre>
       <h3>Claude Switch (Switch for Claude)</h3>
       <p>A Mac app that gives every account its own profile. A profile opens Claude Desktop in its own window with its own login, and Claude Code in Terminal, iTerm, Ghostty or Warp, signed in to the same account.</p>
       <ul>
-        <li><strong>Good:</strong> Claude Desktop and Claude Code in one place, all accounts open at once, email and plan shown per profile, every profile one click away in the menu bar. Skills, settings and <code>CLAUDE.md</code> stay shared. It finds profiles you already made with Multi-Claude, Multiple Claude or the claude-switch CLI and opens them where they are. No account, no analytics, logins stay in your macOS Keychain.</li>
-        <li><strong>Less good:</strong> Mac only, and it costs $9.99 once. It shows no usage numbers and doesn't switch for you near a rate limit. Under the hood it uses the same folders as the alias route, so if you only live in a terminal, an alias does the Claude Code part for free.</li>
+        <li><strong>Good:</strong> Claude Desktop and Claude Code in one place, all accounts open at once, email and plan shown per profile, live 5-hour and weekly usage for every account, every profile one click away in the menu bar. Skills, settings and <code>CLAUDE.md</code> stay shared. It finds profiles you already made with Multi-Claude, Multiple Claude or the claude-switch CLI and opens them where they are. No account, no analytics, logins stay in your macOS Keychain.</li>
+        <li><strong>Less good:</strong> Mac only, and it costs $9.99 once. It doesn't switch accounts for you near a rate limit. Under the hood it uses the same folders as the alias route, so if you only live in a terminal, an alias does the Claude Code part for free.</li>
       </ul>
       <p class="pick">Pick it if you use Claude Desktop, or want all your accounts a click away without shell setup.</p>
       <a class="btn" href="/buy" data-store="compare-option">Buy for Mac · $9.99</a>
@@ -208,7 +208,7 @@ alias claude-personal='CLAUDE_CONFIG_DIR=~/.claude-personal claude'</code></pre>
     </details>
     <details>
       <summary>What about Claude Desktop?</summary>
-      <p>Claude Desktop keeps one account per data folder. To switch in the app you log out and back in. Claude Switch opens Claude Desktop with a separate data folder per profile, so several accounts can be open in their own windows at once. claude-swap and <code>CLAUDE_CONFIG_DIR</code> aliases cover Claude Code only.</p>
+      <p>Claude Desktop keeps one account per data folder. To switch in the app you log out and back in. Claude Switch opens Claude Desktop with a separate data folder per profile, so several accounts can be open in their own windows at once. claude-swap and <code>CLAUDE_CONFIG_DIR</code> aliases cover Claude Code only. More in <a href="claude-desktop-multiple-accounts">multiple accounts in Claude Desktop</a>.</p>
     </details>
     <details>
       <summary>Do I have to restart Claude Code after switching?</summary>
@@ -226,7 +226,7 @@ alias claude-personal='CLAUDE_CONFIG_DIR=~/.claude-personal claude'</code></pre>
 <footer>
   <div class="inner">
     <span>Claude Switch is an independent tool and isn't affiliated with Anthropic. claude-swap is a separate project by its own authors.</span>
-    <span><a href="/">Home</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="mailto:hello@claudeswitch.dev">hello@claudeswitch.dev</a></span>
+    <span><a href="/">Home</a> &middot; <a href="claude-desktop-multiple-accounts">Multiple accounts in Claude Desktop</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="mailto:hello@claudeswitch.dev">hello@claudeswitch.dev</a></span>
   </div>
 </footer>
 <script src="visit.js" defer></script>

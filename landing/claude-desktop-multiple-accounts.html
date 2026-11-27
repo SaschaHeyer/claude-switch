@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Desktop with multiple accounts on a Mac: 4 ways · Claude Switch</title>
+<meta name="description" content="Claude Desktop holds one account at a time. Four ways to use multiple Claude accounts on one Mac: log out and in, browser profiles, a second instance with --user-data-dir, or all accounts open at once with Switch for Claude.">
+<link rel="canonical" href="https://claudeswitch.dev/claude-desktop-multiple-accounts">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Multiple accounts in Claude Desktop: 4 ways">
+<meta property="og:description" content="Log out and in, browser profiles, --user-data-dir, or every account open at once.">
+<meta property="og:image" content="https://claudeswitch.dev/og-image.png">
+<meta property="og:url" content="https://claudeswitch.dev/claude-desktop-multiple-accounts">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="app-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300;12..96,75..100,800&family=Figtree:wght@500;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root { --tangerine: #ff6b2c; --paper: #fff5ec; --cream: #ffe7d3; --ink: #17120e; --ink-soft: #5c4d41; --leaf: #1f9d63; color-scheme: light; }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 500 1.0625rem/1.65 Figtree, system-ui, -apple-system, sans-serif; overflow-x: hidden; }
+header { background: var(--tangerine); border-bottom: 2px solid var(--ink); padding: 18px 16px 56px; }
+.inner { max-width: 960px; margin: 0 auto; }
+.nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.wordmark { display: inline-flex; align-items: center; gap: 10px; font: 800 1.5rem "Bricolage Grotesque", sans-serif; letter-spacing: -0.035em; text-decoration: none; color: inherit; }
+.wordmark img { width: 34px; height: 34px; }
+.wordmark span { font-weight: 300; }
+h1, h2, h3 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin: 0; text-wrap: balance; }
+h1 em, h2 em { font-style: normal; font-weight: 300; }
+h1 { font-size: clamp(2.4rem, 7vw, 4.2rem); margin-top: 48px; max-width: 15ch; }
+h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin: 56px 0 14px; }
+h3 { font-size: 1.35rem; margin: 0 0 8px; }
+.eyebrow { font: 500 0.78rem "IBM Plex Mono", monospace; letter-spacing: 0.14em; text-transform: uppercase; margin-top: 12px; }
+.lede { font-size: 1.2rem; max-width: 46ch; margin: 18px 0 0; }
+main { padding: 8px 16px 72px; }
+p, li { color: var(--ink-soft); }
+header p { color: var(--ink); }
+p { margin: 0 0 12px; }
+strong { color: var(--ink); }
+code { font: 500 0.88em "IBM Plex Mono", monospace; overflow-wrap: anywhere; }
+pre { background: var(--ink); color: var(--paper); border-radius: 14px; padding: 14px 16px; overflow-x: auto; margin: 0 0 14px; }
+pre code { font-size: 0.85rem; overflow-wrap: normal; }
+a { color: inherit; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.55em; font: 700 1.02rem/1 Figtree, sans-serif; padding: 1.05em 1.55em; border-radius: 999px; border: 2px solid var(--ink); text-decoration: none; background: var(--ink); color: var(--paper); transition: transform 0.15s ease; }
+.btn:hover { transform: translateY(-2px); }
+.btn-small { padding: 0.7em 1.15em; font-size: 0.95rem; }
+.box { background: #fff; border: 2px solid var(--ink); border-radius: 20px; box-shadow: 0 4px 0 var(--ink); padding: 22px 24px; margin-top: 32px; }
+.box p { color: var(--ink); margin: 0; }
+.table-wrap { overflow-x: auto; border: 2px solid var(--ink); border-radius: 20px; box-shadow: 0 4px 0 var(--ink); background: #fff; margin-top: 8px; }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 0.95rem; }
+th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--cream); }
+thead th { font: 800 1.02rem/1.15 "Bricolage Grotesque", sans-serif; letter-spacing: -0.02em; background: var(--cream); border-bottom: 2px solid var(--ink); }
+thead th.us { background: var(--tangerine); }
+tbody th { font-weight: 700; color: var(--ink); width: 22%; }
+tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+td { color: var(--ink-soft); }
+.yes { color: var(--leaf); font-weight: 700; }
+.no { color: var(--ink-soft); font-weight: 700; }
+.option { background: #fff; border: 2px solid var(--ink); border-radius: 20px; padding: 22px 24px; margin-top: 18px; }
+.option.us { background: var(--tangerine); }
+.option.us p, .option.us li { color: var(--ink); }
+.option ul { margin: 6px 0 12px; padding-left: 1.2em; }
+.pick { font-weight: 700; color: var(--ink); }
+.note { font-size: 0.92rem; }
+details { border-top: 2px solid var(--ink); padding: 14px 0; }
+details:last-of-type { border-bottom: 2px solid var(--ink); }
+summary { cursor: pointer; font-weight: 700; color: var(--ink); }
+details p { margin: 10px 0 0; }
+.shot { display:block; width:100%; height:auto; border:2px solid var(--ink); border-radius:20px; box-shadow:0 4px 0 var(--ink); margin:18px 0 8px; background:#fff; }
+.toc { margin: 8px 0 0; padding-left: 1.2em; }
+.final { text-align: center; margin-top: 56px; }
+.final h2 { margin-top: 0; }
+footer { border-top: 2px solid var(--ink); padding: 24px 16px; font-size: 0.92rem; }
+footer .inner { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 8px; }
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+</style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "Can I have multiple accounts in the Claude desktop app?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Not inside one copy of the app. Claude Desktop keeps one signed-in account per data folder, and the account menu only switches between organizations that belong to that one login. For a second personal or work account you either log out and back in, use claude.ai in a second browser profile, or open Claude Desktop again with its own data folder, which is what Switch for Claude does with one click per account."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Can I be logged in to two Claude accounts at the same time?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Yes, with a second data folder. Started with Electron's --user-data-dir flag, Claude Desktop runs a second, separate instance with its own login, chats and settings. Switch for Claude creates and opens these instances for you, each in its own window, and shows live usage for every account."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Do my chats move between accounts?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "No. Chats, projects and settings belong to the account they were made in. A separate data folder per account keeps them apart on your Mac as well, so nothing leaks from your work account into your personal one."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Does this work for Claude Code too?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Claude Code keeps one login per config folder, set with the CLAUDE_CONFIG_DIR environment variable. A shell alias per account works in the terminal. Switch for Claude opens Claude Code in your terminal on the same account as the Claude Desktop profile, so both match."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "What about Windows?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Switch for Claude is a Mac app. On Windows, a second browser profile with claude.ai is the simplest way to keep two accounts open, and logging out and back in works in every version of the app."
+   }
+  }
+ ]
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "Article",
+ "headline": "Multiple accounts in Claude Desktop on a Mac: 4 ways",
+ "datePublished": "2026-11-27",
+ "dateModified": "2026-11-27",
+ "author": {
+  "@type": "Person",
+  "name": "Sascha Heyer"
+ },
+ "publisher": {
+  "@type": "Organization",
+  "name": "Switch for Claude",
+  "url": "https://claudeswitch.dev/"
+ },
+ "mainEntityOfPage": "https://claudeswitch.dev/claude-desktop-multiple-accounts",
+ "image": "https://claudeswitch.dev/og-image.png"
+}
+</script>
+</head>
+<body>
+<header>
+  <div class="inner">
+    <nav class="nav" aria-label="Main">
+      <a class="wordmark" href="/"><img src="app-icon.png" alt="" width="34" height="34">claude <span>switch</span></a>
+      <a class="btn btn-small" href="/buy" data-store="multi-nav">Buy · $9.99</a>
+    </nav>
+    <h1>Multiple accounts in Claude Desktop. <em>Four ways on a Mac.</em></h1>
+    <p class="lede">A work account, a personal one, a client's. Claude Desktop signs in to one of them at a time. Here is every way around that, from free and fiddly to one click.</p>
+    <p class="eyebrow">Checked November 27, 2026</p>
+  </div>
+</header>
+
+<main>
+  <div class="inner">
+    <div class="box"><p><strong>Short answer:</strong> Claude Desktop keeps one account per data folder, so one copy of the app means one account. To use more, log out and back in, keep the second account in a browser profile, or start a second Claude Desktop with its own data folder. Switch for Claude does the last one for you: every account opens in its own window, all at the same time, with live usage limits for each.</p></div>
+
+    <h2>Why Claude Desktop holds one account</h2>
+    <p>Claude Desktop keeps your login, its local cache and its settings in one data folder, <code>~/Library/Application Support/Claude</code>. Signing in to another account replaces the login in that folder. The account menu switches between organizations of the same login, for example a personal plan and a Team plan on one email, but not between two different logins. A feature request for real multi-account support (<a href="https://github.com/anthropics/claude-code/issues/32783">anthropics/claude-code#32783</a>) is still open.</p>
+    <p>So every way to use multiple accounts comes down to the same idea: give each account its own place to keep its login.</p>
+    <ol class="toc">
+      <li><a href="#logout">Log out and back in</a></li>
+      <li><a href="#browser">A browser profile for the second account</a></li>
+      <li><a href="#user-data-dir">A second Claude Desktop with <code>--user-data-dir</code></a></li>
+      <li><a href="#switch">Every account open at once with Switch for Claude</a></li>
+    </ol>
+
+    <h2>Side by side</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col"><span class="eyebrow" style="margin:0">What you get</span></th>
+            <th scope="col">Log out and in</th>
+            <th scope="col">Browser profile</th>
+            <th scope="col"><code>--user-data-dir</code></th>
+            <th scope="col" class="us">Switch for Claude</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Accounts open at once</th><td class="no">One</td><td>Two or more, one in the app</td><td class="yes">All of them</td><td class="yes">All of them</td></tr>
+          <tr><th scope="row">Desktop app for every account</th><td class="yes">Yes, one at a time</td><td class="no">No, the others run in a browser</td><td class="yes">Yes</td><td class="yes">Yes, each in its own window</td></tr>
+          <tr><th scope="row">Sign in again to switch</th><td>Every time</td><td>No</td><td>No, once per folder</td><td>No, once per profile</td></tr>
+          <tr><th scope="row">Shows which account is which</th><td class="no">No</td><td>Browser profile name</td><td class="no">Only the folder name you chose</td><td class="yes">Email and plan per profile</td></tr>
+          <tr><th scope="row">Usage limits per account</th><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="yes">Live 5-hour and weekly limits</td></tr>
+          <tr><th scope="row">Claude Code on the same account</th><td class="no">Separate login</td><td class="no">Separate login</td><td>Set up yourself</td><td class="yes">Yes, one click</td></tr>
+          <tr><th scope="row">Setup</th><td>None</td><td>A browser profile</td><td>Terminal command or script per account</td><td>Mac app, one click per profile</td></tr>
+          <tr><th scope="row">Price</th><td>Free</td><td>Free</td><td>Free</td><td>$9.99 once</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="logout">1. Log out and back in</h2>
+    <section class="option">
+      <p>Click your initials in Claude Desktop, choose Log out, and sign in to the other account.</p>
+      <ul>
+        <li><strong>Good:</strong> nothing to install, works on Mac and Windows.</li>
+        <li><strong>Less good:</strong> one account at a time and a browser sign-in on every switch. Your browser often stays signed in to the account you used last, so the login can land in the wrong account unless you sign out of claude.ai first or use a private window.</li>
+      </ul>
+      <p class="pick">Pick it if you switch once a week or less.</p>
+    </section>
+
+    <h2 id="browser">2. A browser profile for the second account</h2>
+    <section class="option">
+      <p>Keep your main account in Claude Desktop and open <a href="https://claude.ai">claude.ai</a> in a separate browser profile (Chrome, Edge, Brave, Arc) or a Firefox container for the other one. Each profile keeps its own cookies, so each stays signed in.</p>
+      <ul>
+        <li><strong>Good:</strong> free, works everywhere, both accounts open at once.</li>
+        <li><strong>Less good:</strong> the second account lives in a browser tab, not the app: no global shortcut, no desktop extensions or local MCP servers, no Claude Code next to it. With three or more accounts the tabs pile up.</li>
+      </ul>
+      <p class="pick">Pick it if you have exactly two accounts and the second one is for occasional chats.</p>
+    </section>
+
+    <h2 id="user-data-dir">3. A second Claude Desktop with <code>--user-data-dir</code></h2>
+    <section class="option">
+      <p>Claude Desktop is an Electron app, and Electron accepts a <code>--user-data-dir</code> flag that points it at a different data folder. A folder per account gives you a separate Claude Desktop per account, running side by side:</p>
+      <pre><code>open -n -a "Claude" --args --user-data-dir="$HOME/.claude-desktop/work"
+open -n -a "Claude" --args --user-data-dir="$HOME/.claude-desktop/personal"</code></pre>
+      <p>Sign in once in each window. From then on each command opens that account directly.</p>
+      <ul>
+        <li><strong>Good:</strong> free, every account in the real desktop app, all open at once, each with its own chats and settings.</li>
+        <li><strong>Less good:</strong> you run a command or write a launcher app for every account, and the windows all look the same, so you have to remember which is which. Sign-in links open whichever instance claimed them last, so sign in to one new instance at a time. Each folder is a fresh install, so connectors and settings are set up again per account.</li>
+      </ul>
+      <p class="pick">Pick it if you like owning your setup and don't mind a terminal.</p>
+    </section>
+
+    <h2 id="switch">4. Every account open at once with Switch for Claude</h2>
+    <section class="option us">
+      <p>Switch for Claude is a Mac app built on the same idea as option 3, without the command line. Every account gets a profile. One click opens Claude Desktop for that account in its own window, and Claude Code in Terminal, iTerm, Ghostty or Warp, signed in to the same account.</p>
+      <ul>
+        <li><strong>Every account open at once,</strong> each in its own window with its own login, chats and settings.</li>
+        <li><strong>Know which account has room:</strong> live 5-hour and weekly usage for every account, in the app and the menu bar, plus which plan would be enough.</li>
+        <li><strong>See who is who:</strong> email and plan on every profile, every profile one click away in the menu bar.</li>
+        <li><strong>Brings your setup along:</strong> it finds profiles you already made with Multi-Claude, Multiple Claude or the claude-switch CLI.</li>
+        <li><strong>Private:</strong> no account, no analytics, logins stay in your macOS Keychain.</li>
+      </ul>
+      <p>Mac only, $9.99 once, no subscription.</p>
+      <a class="btn" href="/buy" data-store="multi-option">Buy for Mac · $9.99</a>
+    </section>
+    <img class="shot" src="usage.png" width="1600" height="1163" loading="lazy" alt="Switch for Claude showing the 5-hour and weekly limits of a Claude account with reset times, which account has the most room, and a plan fit card.">
+    <p class="note">Usage for every account in Switch for Claude.</p>
+
+    <h2>Using Claude Code with several accounts?</h2>
+    <p>Claude Code has the same limit: one login per config folder. A <code>CLAUDE_CONFIG_DIR</code> alias per account, the claude-swap CLI and Switch for Claude all build on that. The <a href="compare.html">comparison of four ways to switch Claude Code accounts</a> goes through each one.</p>
+
+    <h2>Questions</h2>
+    <details>
+      <summary>Can I have multiple accounts in the Claude desktop app?</summary>
+      <p>Not inside one copy of the app. Claude Desktop keeps one signed-in account per data folder, and the account menu only switches between organizations that belong to that one login. For a second personal or work account you either log out and back in, use claude.ai in a second browser profile, or open Claude Desktop again with its own data folder, which is what Switch for Claude does with one click per account.</p>
+    </details>
+    <details>
+      <summary>Can I be logged in to two Claude accounts at the same time?</summary>
+      <p>Yes, with a second data folder. Started with Electron's <code>--user-data-dir</code> flag, Claude Desktop runs a second, separate instance with its own login, chats and settings. Switch for Claude creates and opens these instances for you, each in its own window, and shows live usage for every account.</p>
+    </details>
+    <details>
+      <summary>Do my chats move between accounts?</summary>
+      <p>No. Chats, projects and settings belong to the account they were made in. A separate data folder per account keeps them apart on your Mac as well, so nothing leaks from your work account into your personal one.</p>
+    </details>
+    <details>
+      <summary>Does this work for Claude Code too?</summary>
+      <p>Claude Code keeps one login per config folder, set with the <code>CLAUDE_CONFIG_DIR</code> environment variable. A shell alias per account works in the terminal. Switch for Claude opens Claude Code in your terminal on the same account as the Claude Desktop profile, so both match.</p>
+    </details>
+    <details>
+      <summary>What about Windows?</summary>
+      <p>Switch for Claude is a Mac app. On Windows, a second browser profile with claude.ai is the simplest way to keep two accounts open, and logging out and back in works in every version of the app.</p>
+    </details>
+
+    <section class="final">
+      <h2>Every Claude account. <em>Open at once.</em></h2>
+      <p>Claude Desktop and Claude Code, one window per account, live usage for each. $9.99 once.</p>
+      <a class="btn" href="/buy" data-store="multi-final">Buy for Mac · $9.99</a>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="inner">
+    <span>Switch for Claude is an independent Mac utility and isn't affiliated with Anthropic. Claude is a trademark of Anthropic PBC.</span>
+    <span><a href="/">Home</a> &middot; <a href="compare.html">Compare ways to switch</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="mailto:hello@claudeswitch.dev">hello@claudeswitch.dev</a></span>
+  </div>
+</footer>
+<script src="visit.js" defer></script>
+</body>
+</html>

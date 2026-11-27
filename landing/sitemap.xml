@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://claudeswitch.dev/</loc></url>
-  <url><loc>https://claudeswitch.dev/compare.html</loc></url>
+  <url><loc>https://claudeswitch.dev/compare.html</loc><lastmod>2026-11-27</lastmod></url>
+  <url><loc>https://claudeswitch.dev/claude-desktop-multiple-accounts</loc><lastmod>2026-11-27</lastmod></url>
   <url><loc>https://claudeswitch.dev/privacy.html</loc></url>
   <url><loc>https://claudeswitch.dev/terms.html</loc></url>
   <url><loc>https://claudeswitch.dev/legal.html</loc></url>
