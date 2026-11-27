@@ -102,6 +102,8 @@ claude-switch work
 
 Claude opens with that profile's account. On first launch, it'll ask you to log in — you only do this once per profile.
 
+`create` also adds a `claude-<name>` shortcut (e.g. `claude-work`) to your shell: an alias in `~/.zshrc` for zsh, and a function in `~/.config/fish/functions/` for fish. `delete` removes it again.
+
 ### 3. Run both side by side
 
 Open two terminals:
@@ -211,6 +213,13 @@ cp -r ~/.claude/skills ~/.claude-work/skills
 <summary><strong>Does this work on Linux?</strong></summary>
 
 Yes. The only macOS-specific part is Keychain storage for OAuth tokens. On Linux, Claude Code stores credentials in `~/.claude/.credentials.json`, which is already isolated per config directory.
+
+</details>
+
+<details>
+<summary><strong>Which shells are supported?</strong></summary>
+
+`claude-switch` itself works from any shell. The `claude-<name>` shortcuts are set up for **zsh** (an alias in `~/.zshrc`) and **fish** (one autoloaded function file per profile in `~/.config/fish/functions/`). You get the fish shortcut when fish is your login shell or `~/.config/fish` exists. If neither zsh nor fish is detected, the zsh alias is used. In fish the shortcut works right away; in zsh, run `source ~/.zshrc` first.
 
 </details>
 

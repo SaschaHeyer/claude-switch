@@ -10,6 +10,9 @@ CLAUDE_HOME="$HOME/.claude"
 PROFILE_PREFIX="$HOME/.claude-"
 PROFILE_MARKER=".profile-name"
 ZSHRC="$HOME/.zshrc"
+FISH_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/fish"
+FISH_FUNCTIONS_DIR="$FISH_CONFIG_DIR/functions"
+FISH_MARKER="managed by claude-switch"
 SHARED_ITEMS="skills CLAUDE.md settings.json plugins"
 
 # ── Colors & Icons ───────────────────────────────────────────────────────────
@@ -91,6 +94,85 @@ validate_profile_name() {
 }
 
 profile_dir() { echo "${PROFILE_PREFIX}$1"; }
+
+# ── Shell integration ────────────────────────────────────────────────────────
+
+login_shell() { basename "${SHELL:-}"; }
+
+# zsh: login shell is zsh, or a ~/.zshrc already exists
+uses_zsh() { [ "$(login_shell)" = "zsh" ] || [ -f "$ZSHRC" ]; }
+
+# fish: login shell is fish, or fish has been set up (~/.config/fish exists)
+uses_fish() { [ "$(login_shell)" = "fish" ] || [ -d "$FISH_CONFIG_DIR" ]; }
+
+# Fall back to zsh (the original behavior) if neither shell is detected
+want_zsh() { uses_zsh || ! uses_fish; }
+
+fish_function_file() { echo "$FISH_FUNCTIONS_DIR/claude-$1.fish"; }
+
+install_zsh_alias() {
+    local name="$1" dir="$2"
+    [ -f "$ZSHRC" ] || touch "$ZSHRC"
+
+    if grep -q "alias claude-${name}=" "$ZSHRC" 2>/dev/null; then
+        print_info "Alias 'claude-$name' already in ~/.zshrc"
+    else
+        printf '\n# Claude profile: %s\nalias claude-%s='\''CLAUDE_CONFIG_DIR="%s" claude'\''\n' \
+            "$name" "$name" "$dir" >> "$ZSHRC"
+        printf "  ${GREEN}${IC_CHECK}${RESET}  Added alias ${BOLD}claude-${name}${RESET} to ~/.zshrc\n"
+    fi
+}
+
+# Fish autoloads one function per file from ~/.config/fish/functions/,
+# so each profile gets its own file: no config.fish editing, clean deletes.
+install_fish_function() {
+    local name="$1" dir="$2"
+    local file
+    file="$(fish_function_file "$name")"
+
+    if [ -f "$file" ]; then
+        print_info "Fish function 'claude-$name' already exists"
+        return
+    fi
+
+    mkdir -p "$FISH_FUNCTIONS_DIR"
+    # `env VAR=... cmd` instead of `VAR=... cmd` so it works on fish < 3.1
+    cat > "$file" <<EOF
+# Claude profile: $name ($FISH_MARKER)
+function claude-$name --wraps claude --description 'Claude profile: $name'
+    env CLAUDE_CONFIG_DIR='$dir' claude \$argv
+end
+EOF
+    local tilde='~'
+    printf "  ${GREEN}${IC_CHECK}${RESET}  Added fish function ${BOLD}claude-${name}${RESET} to ${FISH_FUNCTIONS_DIR/#$HOME/$tilde}/\n"
+}
+
+remove_zsh_alias() {
+    local name="$1"
+    [ -f "$ZSHRC" ] || return 0
+    grep -q "alias claude-${name}=" "$ZSHRC" 2>/dev/null || return 0
+    # -i.bak works with both BSD (macOS) and GNU (Linux) sed; -i '' is BSD-only
+    if sed -i.bak -e "/^# Claude profile: ${name}$/d" -e "/^alias claude-${name}=/d" "$ZSHRC"; then
+        rm -f "$ZSHRC.bak"
+        print_success "Removed alias from ~/.zshrc"
+    else
+        print_warn "Could not remove alias from ~/.zshrc; remove it manually"
+    fi
+}
+
+remove_fish_function() {
+    local name="$1"
+    local file
+    file="$(fish_function_file "$name")"
+    [ -f "$file" ] || return 0
+    # Only delete files this script created
+    if grep -q "$FISH_MARKER" "$file" 2>/dev/null; then
+        rm -f "$file"
+        print_success "Removed fish function claude-$name"
+    else
+        print_warn "Left $file in place (not created by claude-switch)"
+    fi
+}
 
 profile_exists() {
     local dir
@@ -195,32 +277,31 @@ cmd_create() {
     print_success "Profile created at ~/.claude-$name/"
     echo ""
 
-    # Add alias to zshrc
-    if [ ! -f "$ZSHRC" ]; then
-        touch "$ZSHRC"
+    # Add shell shortcut(s)
+    local quick_start=("$(gum style --bold 'Quick start')" "")
+    if want_zsh; then
+        install_zsh_alias "$name" "$dir"
+        quick_start+=("  source ~/.zshrc  $(gum style --faint '# zsh')")
     fi
-
-    if grep -q "alias claude-${name}=" "$ZSHRC" 2>/dev/null; then
-        print_info "Alias 'claude-$name' already in ~/.zshrc"
-    else
-        printf '\n# Claude profile: %s\nalias claude-%s='\''CLAUDE_CONFIG_DIR="%s" claude'\''\n' \
-            "$name" "$name" "$dir" >> "$ZSHRC"
-        printf "  ${GREEN}${IC_CHECK}${RESET}  Added alias ${BOLD}claude-${name}${RESET} to ~/.zshrc\n"
+    if uses_fish; then
+        install_fish_function "$name" "$dir"
+        quick_start+=("  $(gum style --faint "# fish: claude-${name} is available right away")")
     fi
 
     echo ""
+
+    quick_start+=(
+        "  $(gum style --foreground 99 "claude-switch ${name}")"
+        ""
+        "$(gum style --faint 'Claude will prompt you to log in on first launch.')"
+    )
 
     gum style \
         --border rounded \
         --border-foreground 240 \
         --padding "1 2" \
         --margin "0 2" \
-        "$(gum style --bold 'Quick start')" \
-        "" \
-        "  source ~/.zshrc" \
-        "  $(gum style --foreground 99 "claude-switch ${name}")" \
-        "" \
-        "$(gum style --faint 'Claude will prompt you to log in on first launch.')"
+        "${quick_start[@]}"
 
     echo ""
 }
@@ -299,7 +380,7 @@ cmd_delete() {
         "" \
         "This will permanently remove:" \
         "  - Profile directory: ~/.claude-${name}/" \
-        "  - Alias 'claude-${name}' from ~/.zshrc" \
+        "  - Shell shortcut 'claude-${name}' (zsh alias / fish function)" \
         "  - Sessions, history, and cached data" \
         "" \
         "$(gum style --faint 'OAuth tokens in macOS Keychain may persist.')"
@@ -318,14 +399,12 @@ cmd_delete() {
     rm -rf "$dir"
     print_success "Removed ~/.claude-$name/"
 
-    if [ -f "$ZSHRC" ]; then
-        sed -i '' "/^# Claude profile: ${name}$/d" "$ZSHRC" 2>/dev/null || true
-        sed -i '' "/^alias claude-${name}=/d" "$ZSHRC" 2>/dev/null || true
-        print_success "Removed alias from ~/.zshrc"
-    fi
+    remove_zsh_alias "$name"
+    remove_fish_function "$name"
 
     echo ""
-    print_info "Run 'source ~/.zshrc' to refresh aliases."
+    want_zsh && print_info "zsh: run 'source ~/.zshrc' to refresh aliases."
+    uses_fish && print_info "fish: run 'functions -e claude-${name}' in open shells (new shells are already clean)."
     echo ""
 }
 
